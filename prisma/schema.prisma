@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "./src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Enums untuk standardisasi nilai status dan peran
+enum Role {
+  ADMIN
+  MAHASISWA
+}
+
+enum Status {
+  MENUNGGU   // Pending
+  DISETUJUI  // Approved
+  DITOLAK    // Rejected
+  DIBATALKAN // Canceled
+}
+
+// Tabel Pengguna (User)
+model User {
+  id            String    @id @default(cuid()) // Primary Key string unik
+  nama          String
+  email         String    @unique
+  password      String    // Disimpan dalam bentuk hash (bcrypt/argon2)
+  role          Role      @default(MAHASISWA)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relasi
+  reservations  Reservation[] // One-to-Many: Satu user bisa punya banyak reservasi
+}
+
+// Tabel Ruangan/Aset (Room)
+model Room {
+  id          String   @id @default(cuid())
+  nama        String   // Contoh: "Aula Serbaguna", "Lab Komputer 1"
+  deskripsi   String?  // Deskripsi fasilitas
+  kapasitas   Int      // Jumlah orang maksimal
+  lokasi      String   // Contoh: "Gedung A Lt. 2"
+  gambar      String?  // URL ke penyimpanan gambar (jika ada)
+  isActive    Boolean  @default(true) // Soft delete: jika ruangan direnovasi/dihapus
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relasi
+  reservations Reservation[] // One-to-Many: Satu ruangan bisa dipesan berkali-kali
+  blockedSlots BlockedSlot[] // One-to-Many: Satu ruangan bisa punya banyak jadwal blokir
+}
+
+// Tabel Transaksi Reservasi (Reservation)
+model Reservation {
+  id              String   @id @default(cuid())
+  userId          String
+  roomId          String
+  waktuMulai      DateTime
+  waktuSelesai    DateTime
+  keperluan       String   // Alasan peminjaman
+  jumlahPeserta   Int
+  status          Status   @default(MENUNGGU)
+  alasanPenolakan String?  // Diisi Admin jika status DITOLAK
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Definisi Relasi (Foreign Keys)
+  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room    Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  // Indeks untuk mempercepat pencarian berdasarkan tanggal
+  @@index([waktuMulai, waktuSelesai])
+}
+
+// Tabel Jadwal Blokir (BlockedSlot)
+// Digunakan Admin untuk menutup jadwal (misal: Pemeliharaan/Acara Internal)
+model BlockedSlot {
+  id           String   @id @default(cuid())
+  roomId       String
+  waktuMulai   DateTime
+  waktuSelesai DateTime
+  alasan       String   // Contoh: "Renovasi AC", "Rapat Rektorat"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Definisi Relasi
+  room    Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@index([waktuMulai, waktuSelesai])
+}
