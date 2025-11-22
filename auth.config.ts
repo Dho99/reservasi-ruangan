@@ -1,9 +1,7 @@
-import GitHub from "next-auth/providers/github"
 import type { NextAuthConfig } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { compare } from "bcrypt"
-import { prisma } from "./lib/prisma"
+import { compare } from "bcrypt-ts"
 import { findUserByEmail } from "./lib/utils/auth"
 
 // Notice this is only an object, not a full Auth.js instance
