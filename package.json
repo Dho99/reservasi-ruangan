@@ -14,7 +14,7 @@
     "@prisma/adapter-pg": "^7.0.0",
     "@prisma/client": "^7.0.0",
     "@prisma/extension-accelerate": "^2.0.2",
-    "@types/bcrypt": "^6.0.0",
+    "bcrypt-ts": "^7.1.0",
     "next": "16.0.1",
     "next-auth": "^5.0.0-beta.30",
     "pg": "^8.16.3",
