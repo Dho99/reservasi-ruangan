@@ -1,18 +1,29 @@
-import {NextRequest, NextResponse} from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET() {
+
+export async function GET(request: NextRequest, { params }: { params: Promise<{ roomId: string, startDate: string }> }) {
     try {
-        const schedules = await prisma.room.findMany();
+        const { roomId, startDate } = await params;
 
-        return NextResponse.json({
-            data: schedules,
-        }, { status: 200 });
+        const schedules = await prisma.reservation.findMany({   
+            where: {
+                roomId: roomId,
+                createdAt: new Date(startDate).toDateString(),
+            },
+            include: {
+                room: true,
+                user: true,
+            }
+        });
 
-    } catch (error) {
-        console.error('Error fetching schedules:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        return NextResponse.json({ data: schedules }, { status: 200 });
+    } catch (err: unknown) {
+        return NextResponse.json(
+            {
+                message: err instanceof Error ? err.message : "Internal Server Error",
+            },
+            { status: 500 }
+        );
     }
-
-
 }

@@ -1,147 +1,162 @@
-# Analisis Perancangan Basis Data: Sistem Reservasi Ruangan Kampus
+Analisis dan Perancangan Basis Data: Sistem Reservasi Ruangan Kampus
 
-## 1. Visualisasi Entity Relationship Diagram (ERD)
+1. Entity Relationship Diagram (ERD)
 
-Diagram berikut merepresentasikan struktur basis data relasional yang dirancang untuk mendukung integritas data, efisiensi query jadwal, dan skalabilitas sistem.
+Diagram ini memvisualisasikan struktur basis data relasional yang dinormalisasi, dirancang untuk mendukung integritas data, performa tinggi pada query jadwal, dan audit keamanan.
 
-```mermaid
 erDiagram
     %% ==========================================
-    %% ENTITAS UTAMA
+    %% ENTITAS (DATA TABLES)
     %% ==========================================
 
     USER {
-        String id PK "Primary Key, CUID"
-        String npm UK "Unique, Nomor Induk Mahasiswa/NIP"
+        String id PK "Primary Key (CUID)"
+        String npm UK "Unique Index (NPM/NIP)"
         String nama "Nama Lengkap"
-        String email UK "Unique, Wajib domain @unsil.ac.id"
-        String password "Hashed Password (bcrypt)"
+        String email UK "Unique, Validated @unsil.ac.id"
+        String image "URL Foto Profil (Optional)"
         Enum role "ADMIN | MAHASISWA"
-        DateTime createdAt "Timestamp pembuatan"
-        DateTime updatedAt "Timestamp update"
+        DateTime createdAt "Waktu pendaftaran"
+        DateTime updatedAt "Waktu update profil"
     }
 
     ROOM {
-        String id PK "Primary Key, CUID"
+        String id PK "Primary Key (CUID)"
         String nama "Nama Ruangan"
-        String deskripsi "Fasilitas detail (Nullable)"
-        Int kapasitas "Kapasitas maks orang"
+        String deskripsi "Fasilitas & Keterangan"
+        Int kapasitas "Validasi Logis Peserta"
         String lokasi "Gedung/Lantai"
-        Boolean isActive "Soft Delete Flag (Default: true)"
+        String gambar "URL Foto Ruangan"
+        Boolean isActive "Soft Delete Flag"
         DateTime createdAt
         DateTime updatedAt
     }
 
     RESERVATION {
-        String id PK "Primary Key, CUID"
-        String userId FK "Foreign Key ke User"
-        String roomId FK "Foreign Key ke Room"
-        DateTime waktuMulai "Waktu mulai kegiatan"
-        DateTime waktuSelesai "Waktu selesai kegiatan"
-        String keperluan "Deskripsi kegiatan"
-        Int jumlahPeserta "Estimasi peserta"
-        Enum status "MENUNGGU | DISETUJUI | DITOLAK | DIBATALKAN"
-        String alasanPenolakan "Nullable, diisi jika ditolak"
+        String id PK "Primary Key (CUID)"
+        String userId FK "Peminjam"
+        String roomId FK "Ruangan yang dipinjam"
+        DateTime waktuMulai "Composite Index [Start, End]"
+        DateTime waktuSelesai "Composite Index [Start, End]"
+        String keperluan "Deskripsi Kegiatan"
+        Int jumlahPeserta "Estimasi jumlah orang"
+        Enum status "MENUNGGU | DISETUJUI | DITOLAK | DIBATALKAN | SELESAI"
+        String alasanPenolakan "Nullable (Diisi jika DITOLAK)"
         DateTime createdAt
         DateTime updatedAt
     }
 
     BLOCKED_SLOT {
-        String id PK "Primary Key, CUID"
-        String roomId FK "Foreign Key ke Room"
-        DateTime waktuMulai
-        DateTime waktuSelesai
-        String alasan "Alasan blokir (ex: Renovasi)"
+        String id PK "Primary Key (CUID)"
+        String roomId FK "Ruangan yang diblokir"
+        DateTime waktuMulai "Index Time"
+        DateTime waktuSelesai "Index Time"
+        String alasan "Alasan Administratif (ex: Renovasi)"
+        String createdBy FK "Admin yang memblokir (userId)"
         DateTime createdAt
         DateTime updatedAt
     }
 
+    AUDIT_LOG {
+        String id PK "Primary Key (CUID)"
+        String userId FK "Aktor (Siapa yang melakukan aksi)"
+        String targetId "ID Objek yang diubah (ResvID/RoomID)"
+        String targetType "Tipe Objek (RESERVATION/ROOM)"
+        Enum action "CREATE | UPDATE | DELETE | APPROVE | REJECT"
+        Json metadata "Snapshot data sebelum/sesudah (untuk rollback)"
+        DateTime timestamp "Waktu kejadian"
+    }
+
     %% ==========================================
-    %% DEFINISI RELASI (RELATIONSHIPS)
+    %% RELASI & KARDINALITAS
     %% ==========================================
 
-    USER ||--o{ RESERVATION : "makes (1:N)"
-    ROOM ||--o{ RESERVATION : "has (1:N)"
-    ROOM ||--o{ BLOCKED_SLOT : "has (1:N)"
-```
+    %% User & Reservation (1 User -> Banyak Reservasi)
+    USER ||--o{ RESERVATION : "mengajukan (1:N)"
 
----
+    %% Room & Reservation (1 Room -> Banyak Reservasi)
+    ROOM ||--o{ RESERVATION : "memiliki jadwal (1:N)"
 
-## 2. Analisis Detail Atribut Entitas (Data Dictionary)
+    %% Room & BlockedSlot (1 Room -> Banyak Jadwal Blokir)
+    ROOM ||--o{ BLOCKED_SLOT : "memiliki blokir (1:N)"
 
-Bagian ini menguraikan spesifikasi atribut pada setiap entitas, termasuk tipe data dan justifikasi teknis penggunaannya dalam konteks sistem reservasi.
+    %% User (Admin) & BlockedSlot (1 Admin -> Membuat Banyak Blokir)
+    USER ||--o{ BLOCKED_SLOT : "membuat (1:N)"
 
-### A. Entitas User (Pengguna)
+    %% User & AuditLog (1 User -> Memicu Banyak Log)
+    USER ||--o{ AUDIT_LOG : "memicu aktivitas (1:N)"
 
-Entitas ini menyimpan data autentikasi dan profil pengguna sistem.
 
-| Atribut | Tipe Data | Kendala (Constraint) | Analisis & Justifikasi Teknis |
-|---------|-----------|---------------------|-------------------------------|
-| `id` | String | PRIMARY KEY, CUID | Menggunakan Collision Resistant Unique Identifier (CUID) alih-alih Auto-Increment Integer untuk keamanan (tidak dapat ditebak) dan kemudahan migrasi data antar database di masa depan. |
-| `npm` | String | UNIQUE | Nomor Induk Mahasiswa atau NIP. Dibuat unik untuk menjamin satu identitas akademik hanya memiliki satu akun. Tipe String dipilih untuk mengakomodasi kemungkinan karakter non-numerik atau leading zero. |
-| `nama` | String | NOT NULL | Menyimpan nama lengkap pengguna untuk keperluan tampilan antarmuka dan laporan. |
-| `email` | String | UNIQUE | Kunci utama autentikasi. Sistem mewajibkan validasi domain @unsil.ac.id pada level aplikasi. Kendala UNIQUE mencegah pendaftaran ganda dengan email yang sama. |
-| `password` | String | NOT NULL | Menyimpan kata sandi yang telah di-hash (menggunakan algoritma seperti bcrypt atau Argon2). Panjang string disesuaikan dengan hasil hash. |
-| `role` | Enum | DEFAULT: 'MAHASISWA' | Menggunakan tipe enumerasi (ADMIN, MAHASISWA) untuk membatasi nilai input dan mendukung Role-Based Access Control (RBAC) yang ketat. |
+2. Analisis Entitas dan Atribut (Data Dictionary)
 
-### B. Entitas Room (Ruangan/Fasilitas)
+Perancangan ini menggunakan pendekatan Model-First yang kompatibel dengan Prisma ORM dan PostgreSQL.
 
-Entitas ini merepresentasikan objek fisik (sumber daya) yang dapat dipinjam.
+A. Entitas USER (Pengguna)
 
-| Atribut | Tipe Data | Kendala (Constraint) | Analisis & Justifikasi Teknis |
-|---------|-----------|---------------------|-------------------------------|
-| `id` | String | PRIMARY KEY, CUID | Identifikasi unik untuk setiap ruangan. |
-| `nama` | String | NOT NULL | Nama ruangan (contoh: "Aula Serbaguna"). |
-| `kapasitas` | Integer | NOT NULL | Digunakan untuk validasi logis. Sistem dapat menolak reservasi jika jumlahPeserta pada reservasi melebihi kapasitas ruangan. |
-| `lokasi` | String | NOT NULL | Informasi lokasi fisik (Gedung/Lantai) untuk memudahkan pengguna menemukan ruangan. |
-| `isActive` | Boolean | DEFAULT: true | Implementasi Soft Delete. Jika ruangan direnovasi atau tidak lagi disewakan, atribut ini diubah menjadi false alih-alih menghapus data. Ini menjaga integritas referensial data reservasi historis agar tidak hilang (yatim piatu). |
+Menyimpan identitas seluruh aktor sistem.
 
-### C. Entitas Reservation (Transaksi Reservasi)
+Atribut Kunci:
 
-Entitas transaksional utama yang menghubungkan pengguna dengan ruangan dalam dimensi waktu.
+id (PK): Menggunakan CUID (Collision Resistant Unique Identifier) alih-alih Auto-increment integer. Ini praktik terbaik modern untuk keamanan (mencegah enumerasi ID) dan skalabilitas horizontal.
 
-| Atribut | Tipe Data | Kendala (Constraint) | Analisis & Justifikasi Teknis |
-|---------|-----------|---------------------|-------------------------------|
-| `id` | String | PRIMARY KEY, CUID | Identifikasi unik tiket reservasi. |
-| `userId` | String | FOREIGN KEY | Referensi ke tabel User. Menggunakan kaidah Referential Integrity (jika user dihapus, opsi CASCADE atau SET NULL dapat diterapkan). |
-| `roomId` | String | FOREIGN KEY | Referensi ke tabel Room. |
-| `waktuMulai` | DateTime | INDEXED | Waktu awal penggunaan. Kolom ini wajib diindeks bersama waktuSelesai untuk mempercepat query pengecekan bentrok (conflict detection) yang akan sering dieksekusi. |
-| `waktuSelesai` | DateTime | INDEXED | Waktu akhir penggunaan. |
-| `status` | Enum | DEFAULT: 'MENUNGGU' | Mesin status (State Machine) reservasi: MENUNGGU (awal), DISETUJUI (final positif), DITOLAK (final negatif), DIBATALKAN (pembatalan user). |
-| `alasanPenolakan` | String | NULLABLE | Atribut opsional yang hanya diisi jika Admin mengubah status menjadi DITOLAK, memberikan transparansi kepada mahasiswa. |
+role: Menggunakan tipe Enumerasi (ADMIN, MAHASISWA) untuk menegakkan Role-Based Access Control (RBAC) yang ketat pada level basis data.
 
-### D. Entitas BlockedSlot (Jadwal Blokir)
+email: Dilindungi dengan Unique Constraint dan divalidasi pada level aplikasi untuk memastikan hanya domain @unsil.ac.id yang terdaftar.
 
-Entitas pendukung untuk manajemen ketersediaan administratif (non-reservasi).
+B. Entitas ROOM (Fasilitas)
 
-| Atribut | Tipe Data | Kendala (Constraint) | Analisis & Justifikasi Teknis |
-|---------|-----------|---------------------|-------------------------------|
-| `id` | String | PRIMARY KEY, CUID | Identifikasi unik slot blokir. |
-| `roomId` | String | FOREIGN KEY | Menghubungkan blokir dengan ruangan spesifik. |
-| `waktuMulai` | DateTime | INDEXED | Parameter waktu untuk pengecekan ketersediaan. Memiliki prioritas lebih tinggi daripada jadwal reservasi dalam logika aplikasi. |
-| `waktuSelesai` | DateTime | INDEXED | Parameter waktu akhir blokir. |
-| `alasan` | String | NOT NULL | Keterangan mengapa ruangan diblokir (contoh: "Pemeliharaan AC", "Ujian Masuk"). |
+Merepresentasikan sumber daya fisik kampus.
 
----
+Atribut Kunci:
 
-## 3. Analisis Relasi Antar Entitas
+isActive: Implementasi mekanisme Soft Delete. Ruangan yang sedang direnovasi atau tidak digunakan lagi tidak dihapus datanya secara fisik untuk menjaga integritas riwayat reservasi lama, melainkan hanya ditandai sebagai false.
 
-Hubungan antar entitas dirancang untuk mencerminkan logika bisnis kampus:
+kapasitas: Digunakan sebagai parameter validasi bisnis. Sistem akan menolak reservasi jika jumlahPeserta > kapasitas.
 
-### User - Reservation (One-to-Many / 1:N)
+C. Entitas RESERVATION (Transaksi Inti)
 
-**Kardinalitas:** Satu pengguna (User) dapat membuat banyak pengajuan (Reservation), namun satu data reservasi spesifik hanya dimiliki oleh satu pengguna.
+Jantung operasional sistem yang menghubungkan pengguna dengan ruangan.
 
-**Implikasi:** Memungkinkan sistem menampilkan "Riwayat Reservasi Saya" pada dashboard mahasiswa.
+Atribut Kunci:
 
-### Room - Reservation (One-to-Many / 1:N)
+waktuMulai & waktuSelesai: Atribut paling kritis. Wajib diterapkan Composite Index pada kedua kolom ini di PostgreSQL. Hal ini menjamin performa pencarian jadwal bentrok (conflict detection) tetap milidetik meskipun data mencapai jutaan baris.
 
-**Kardinalitas:** Satu ruangan (Room) dapat memiliki banyak jadwal reservasi (Reservation) yang berbeda waktu.
+status: Mesin status (State Machine) yang mencakup siklus hidup lengkap: MENUNGGU $\rightarrow$ DISETUJUI/DITOLAK $\rightarrow$ SELESAI/DIBATALKAN.
 
-**Implikasi:** Memungkinkan Admin melihat kalender penggunaan untuk satu ruangan spesifik.
+D. Entitas BLOCKED_SLOT (Manajemen Ketersediaan)
 
-### Room - BlockedSlot (One-to-Many / 1:N)
+Entitas khusus administratif untuk menutup jadwal tanpa melalui proses reservasi.
 
-**Kardinalitas:** Satu ruangan dapat memiliki banyak jadwal pemeliharaan/blokir.
+Fungsi: Digunakan untuk pemeliharaan, ujian nasional, atau acara internal kampus.
 
-**Implikasi:** Memisahkan data operasional (blokir) dari data transaksional (reservasi) menjaga kebersihan data statistik penggunaan ruangan oleh mahasiswa.
+Prioritas: Dalam algoritma pengecekan jadwal, entitas ini memiliki hierarki lebih tinggi dari RESERVATION. Jika ada BlockedSlot, reservasi tidak bisa dibuat.
+
+Relasi Tambahan: Memiliki createdBy (Foreign Key ke User) untuk mengetahui Admin mana yang melakukan pemblokiran.
+
+E. Entitas AUDIT_LOG (Akuntabilitas & Keamanan)
+
+Entitas tambahan untuk memenuhi aspek "Akuntabilitas" dalam latar belakang masalah.
+
+Fungsi: Mencatat "Siapa melakukan Apa, Kapan, dan Di Mana".
+
+metadata (JSON): Menyimpan snapshot data. Misalnya, saat Admin menolak pengajuan, sistem menyimpan status sebelumnya. Ini berguna untuk fitur undo atau investigasi jika terjadi sengketa peminjaman.
+
+3. Analisis Relasi (Relationship & Cardinality)
+
+Sistem ini didominasi oleh relasi One-to-Many (1:N) yang efisien:
+
+User $\rightarrow$ Reservation (1:N)
+
+Analisis: Satu mahasiswa dapat memiliki riwayat banyak peminjaman sepanjang masa studinya.
+
+Behavior: Jika User dihapus, data reservasi bisa diatur SET NULL atau CASCADE (tergantung kebijakan kampus apakah ingin menyimpan riwayat alumni atau tidak).
+
+Room $\rightarrow$ Reservation (1:N)
+
+Analisis: Satu ruangan menampung banyak slot waktu reservasi yang berbeda.
+
+Constraint: Relasi ini dijaga ketat oleh logika aplikasi untuk mencegah overlapping waktu (satu ruangan tidak boleh memiliki 2 reservasi di rentang waktu yang sama).
+
+User $\rightarrow$ AuditLog (1:N)
+
+Analisis: Setiap tindakan pengguna (Login, Submit, Approve, Reject) akan menghasilkan satu baris log baru. Ini akan menjadi tabel dengan pertumbuhan data tercepat (high volume table).

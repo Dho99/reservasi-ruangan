@@ -1,5 +1,5 @@
 import type { NextAuthConfig } from "next-auth"
-import GoogleProvider from "next-auth/providers/google"
+import Google from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { compare } from "bcrypt-ts"
 import { findUserByEmail } from "./lib/utils/auth"
@@ -8,9 +8,7 @@ import { findUserByEmail } from "./lib/utils/auth"
 export default {
     providers: [
     // --- GOOGLE PROVIDER (Dengan Pembatasan Domain) ---
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    Google({
       // KONFIGURASI TAMBAHAN PENTING:
       authorization: {
         params: {

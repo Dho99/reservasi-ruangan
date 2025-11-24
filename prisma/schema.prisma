@@ -35,6 +35,7 @@ model User {
   role          Role      @default(MAHASISWA)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  auditLogs    AuditLog[]  // One-to-Many: Satu user bisa punya banyak log aktivitas
 
   // Relasi
   reservations  Reservation[] // One-to-Many: Satu user bisa punya banyak reservasi
@@ -51,6 +52,7 @@ model Room {
   isActive    Boolean  @default(true) // Soft delete: jika ruangan direnovasi/dihapus
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  auditLogs  AuditLog[]  // One-to-Many: Satu ruangan bisa punya banyak log aktivitas
 
   // Relasi
   reservations Reservation[] // One-to-Many: Satu ruangan bisa dipesan berkali-kali
@@ -70,6 +72,7 @@ model Reservation {
   alasanPenolakan String?  // Diisi Admin jika status DITOLAK
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  auditLogs    AuditLog[]  // One-to-Many: Satu reservasi bisa punya banyak log aktivitas
 
   // Definisi Relasi (Foreign Keys)
   user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -94,4 +97,29 @@ model BlockedSlot {
   room    Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
 
   @@index([waktuMulai, waktuSelesai])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String
+  roomId    String?  
+  reservationId String?
+  action      String 
+  description String? 
+  timestamp   DateTime @default(now())
+
+  // Definisi Relasi
+  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room    Room? @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  reservation    Reservation? @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+
+  @@index([timestamp])
+}
+
+
+
+enum Target_Type {
+  ROOM
+  EQUIPMENT
+  RESERVATION
 }
