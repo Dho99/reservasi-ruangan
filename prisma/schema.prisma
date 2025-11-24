@@ -95,3 +95,4 @@ model BlockedSlot {
 
   @@index([waktuMulai, waktuSelesai])
 }
+
