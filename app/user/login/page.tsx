@@ -27,7 +27,7 @@ export default function UserLoginPage() {
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"
-              className="pl-10 bg-slate-50 border-slate-200 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
+              className="pl-10 bg-slate-50 border-slate-200 focus:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
             />
           </div>
         </div>
@@ -39,7 +39,7 @@ export default function UserLoginPage() {
               placeholder="Password"
               type="password"
               autoComplete="current-password"
-              className="pl-10 bg-slate-50 border-slate-200 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
+              className="pl-10 bg-slate-50 border-slate-200 focus:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
             />
           </div>
         </div>
