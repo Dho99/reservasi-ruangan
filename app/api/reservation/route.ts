@@ -23,9 +23,27 @@ export async function POST(request: NextRequest) {
       waktuSelesai,
       keperluan,
       jumlahPeserta,
-      status,
       alasanPenolakan,
     } = await request.json();
+
+    const checkExistingReservation = await prisma.reservation.findFirst({
+      where: {
+        roomId,
+        waktuMulai: {
+          lt: waktuSelesai,
+        },
+        waktuSelesai: {
+          gt: waktuMulai,
+        },
+      },
+    });
+
+    if(checkExistingReservation){
+        return NextResponse.json(
+            { message: "Room is already booked for the selected time slot." },
+            { status: 409 }
+          );
+    }
 
     const newReservation = await prisma.reservation.create({
       data: {
@@ -35,7 +53,7 @@ export async function POST(request: NextRequest) {
         waktuSelesai,
         keperluan,
         jumlahPeserta,
-        status,
+        status: "MENUNGGU",
         alasanPenolakan,
       },
     });
