@@ -1,8 +1,18 @@
 import type { NextAuthConfig } from "next-auth"
+import { CredentialsSignin } from "next-auth"
 import Google from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { compare } from "bcrypt-ts"
 import { findUserByEmail } from "./lib/utils/auth"
+
+
+class InvalidLoginError extends CredentialsSignin {
+  code = "Invalid identifier or password";
+}
+
+class UserNotFoundError extends CredentialsSignin {
+  code = "User not found";
+}
 
 // Notice this is only an object, not a full Auth.js instance
 export default {
@@ -27,31 +37,29 @@ export default {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null
+        if(!credentials?.email || !credentials?.password) {
+           throw new InvalidLoginError()
         }
 
-        // Cari user di database
-        const user = await findUserByEmail(credentials.email as string)
+        const user = await findUserByEmail(credentials.email as string);
 
-        if (!user || !user.password) {
-          return null
+        if(!user) {
+              throw new UserNotFoundError();
         }
 
-        // Validasi password (hash)
-        const isPasswordValid = await compare(credentials.password as string, user.password)
-
-        if (!isPasswordValid) {
-          return null
+        const isPasswordValid = await compare(credentials.password as string, user.password as string)
+        
+        if(!isPasswordValid) {
+           throw new InvalidLoginError();
         }
 
         return {
           id: user.id,
           email: user.email,
-          name: user.nama,
-          role: user.role, 
-        }
+          role: user.role
+        };
       }
+      
     })
   ],
 } satisfies NextAuthConfig

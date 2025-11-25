@@ -25,7 +25,7 @@ const loginSchema = z.object({
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
-export default function UserLoginPage() {
+export default function UserRegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<LoginFormValues>({
