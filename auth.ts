@@ -36,10 +36,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: "jwt",
   },
 
-  // 3. Definisi Provider
-
-
-  // 4. Callbacks: Logika Validasi & Manipulasi Sesi
   callbacks: {
     // --- GATEKEEPER UTAMA (Server-Side Validation) ---
     // Callback ini berjalan tepat setelah user login di Google, tapi SEBELUM sesi dibuat.
@@ -73,12 +69,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.role = token.role as "ADMIN" | "MAHASISWA"
       }
       return session
+    },  
+
+    async authorized({ auth }) {
+      // Middleware akan memanggil callback ini untuk setiap request yang dilindungi.
+      // Jika token tidak ada, tolak akses.
+      if (!auth) {
+        return false;
+      }
+      return true; // Izinkan akses jika token valid
     }
   },
 
   // 5. Halaman Kustom
   pages: {
-    signIn: '/auth/login',
+    signIn: '/',
     error: '/auth/error', // Error (misal domain salah) akan diarahkan ke sini
   }
 });

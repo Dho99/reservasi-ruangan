@@ -1,6 +1,10 @@
+"use client"
+
 import React from "react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface LoginLayoutProps {
   children: React.ReactNode;
@@ -19,6 +23,11 @@ export function ModernLoginLayout({
   welcomeDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra magna nisl.",
   sideImageBg = "bg-gradient-to-br from-purple-600 to-blue-600",
 }: LoginLayoutProps) {
+
+  const pathname = usePathname();
+
+  const isLoginPage = pathname.includes("/login");
+
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-slate-50 p-4 dark:bg-slate-950 transition-colors duration-300">
       <div className="absolute top-4 right-4 z-50">
@@ -40,10 +49,10 @@ export function ModernLoginLayout({
             {children}
 
             <div className="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">
-               Don&apos;t have an account?{" "}
-              <a href="#" className="font-medium text-blue-600 hover:underline dark:text-blue-400">
-                Create
-              </a>
+              {isLoginPage ? "Don't" : ""} have an account?{" "}
+              <Link href={`/user/${isLoginPage ? "register" : "login"}`} className="font-medium text-blue-600 hover:underline dark:text-blue-400">
+                {isLoginPage ? "Register here" : "Login here"}
+              </Link>
             </div>
           </div>
         </div>

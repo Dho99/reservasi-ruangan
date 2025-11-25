@@ -39,7 +39,7 @@ export default function Home() {
               Kelola ruangan, jadwal, dan persetujuan reservasi.
             </p>
             <Link href="/admin/login" className="w-full">
-                <Button variant="primary" className="w-full bg-slate-900 hover:bg-slate-800">Masuk sebagai Admin</Button>
+                <Button variant="default" className="w-full bg-slate-900 hover:bg-slate-800">Masuk sebagai Admin</Button>
             </Link>
           </div>
         </div>

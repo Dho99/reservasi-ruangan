@@ -2,9 +2,9 @@ import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ roomId: string, startDate: string }> }) {
+export async function GET(request: NextRequest) {
     try {
-        const { roomId, startDate } = await params;
+        const { roomId, startDate } = await request.json();
 
         const schedules = await prisma.reservation.findMany({   
             where: {
