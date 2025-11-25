@@ -124,25 +124,6 @@ export default function UserLoginPage() {
           />
 
           <div className="flex items-center justify-between text-sm">
-            {/* <FormField
-              control={form.control}
-              name="remember"
-              render={({ field }) => (
-                <FormItem className="flex items-center space-x-2">
-                  <FormControl>
-                    <input
-                      type="checkbox"
-                      checked={field.value}
-                      onChange={field.onChange}
-                      className="rounded border-slate-300 text-slate-600 focus:ring-slate-500"
-                    />
-                  </FormControl>
-                  <label className="text-slate-500 cursor-pointer select-none !mt-0">
-                    Remember me
-                  </label>
-                </FormItem>
-              )}
-            /> */}
             <Link
               href="#"
               className="font-medium text-slate-600 hover:underline dark:text-slate-400"

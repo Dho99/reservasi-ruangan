@@ -1,3 +1,5 @@
-export const services = {
+import { reservationService } from "./reservation";
 
+export const services = {
+    reservation: reservationService
 };
