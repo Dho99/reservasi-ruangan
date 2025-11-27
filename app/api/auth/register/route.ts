@@ -6,7 +6,14 @@ export async function POST(request: NextRequest) {
     try {
         const { nama, email, password, role = "MAHASISWA" } = await request.json();
 
-        const existingUser = await prisma.user.findUnique({
+        if(!email.includes('unsil.ac.id')){
+            return NextResponse.json(
+                { message: "Email harus berakhiran @unsil.ac.id" },
+                { status: 400 }
+            );
+        }
+
+        const existingUser = await prisma?.user?.findUnique({
             where: {
                 email: email
             }
@@ -21,7 +28,7 @@ export async function POST(request: NextRequest) {
 
         const hashedPassword = await hash(password, 10);
 
-        const newUser = await prisma.user.create({
+        const newUser = await prisma?.user?.create({
             data: {
                 nama,
                 email,
@@ -30,7 +37,9 @@ export async function POST(request: NextRequest) {
             }
         });
 
-        return NextResponse.json({ data: newUser }, { status: 201 });
+        console.log(newUser);
+
+        return NextResponse.json({ message: "Registrasi Berhasil" }, { status: 201 });
 
     }catch(err: unknown){
         return NextResponse.json(

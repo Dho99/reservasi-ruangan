@@ -11,7 +11,7 @@ export default function UserDashboardLayout({
 
   const { data: session } = useSession();
 
-  if (session?.user?.role !== "USER" as string) {
+  if (session?.user?.role !== "MAHASISWA" as string) {
     return <div>Access Denied</div>;
   }
 
