@@ -31,18 +31,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   ...authConfig,
   
-  // 2. Strategi Sesi: Gunakan JWT untuk performa (stateless)
   session: {
     strategy: "jwt",
   },
 
   callbacks: {
-    // --- GATEKEEPER UTAMA (Server-Side Validation) ---
-    // Callback ini berjalan tepat setelah user login di Google, tapi SEBELUM sesi dibuat.
-    async signIn({ user, account, profile }) {
+    async signIn({ user }) {
       
       // Validasi ketat: Hanya izinkan email dengan akhiran domain yang benar
-      const isAllowedDomain = user.email?.endsWith("@unsil.ac.id");
+      const isAllowedDomain = user.email?.endsWith("unsil.ac.id");
 
       if (!isAllowedDomain) {
         // Jika domain salah, tolak akses. User akan dilempar ke halaman error.
@@ -77,7 +74,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (!auth) {
         return false;
       }
-      return true; // Izinkan akses jika token valid
+      return true;
     }
   },
 

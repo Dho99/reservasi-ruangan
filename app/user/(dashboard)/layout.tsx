@@ -2,6 +2,7 @@
 
 import UserLayoutWrapper from "@/components/layouts/user/UserLayoutWrapper";
 import { useSession } from "next-auth/react"
+import InvalidRole from "@/components/invalid-role";
 
 export default function UserDashboardLayout({
   children,
@@ -12,7 +13,7 @@ export default function UserDashboardLayout({
   const { data: session } = useSession();
 
   if (session?.user?.role !== "MAHASISWA" as string) {
-    return <div>Access Denied</div>;
+     return <InvalidRole />;
   }
 
   return <UserLayoutWrapper>{children}</UserLayoutWrapper>;

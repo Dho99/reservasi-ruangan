@@ -29,6 +29,18 @@ export default {
           prompt: "select_account", 
         },
       },
+      async profile(profile) {
+        const user = {
+          id: profile.sub,
+          nama: profile.name,
+          email: profile.email,
+          // password: profile.name.toLocaleLowerCase().replace(' ', '_'),
+          role: profile.email?.endsWith("@student.unsil.ac.id") ? ("MAHASISWA" as "MAHASISWA" | "ADMIN") :  ("ADMIN" as "MAHASISWA" | "ADMIN"),
+          image: profile.picture,
+        };
+
+        return user;
+      },
     }),
     CredentialsProvider({
       name: "Credentials",

@@ -153,7 +153,7 @@ export default function UserLoginPage() {
             className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200 shadow-lg shadow-slate-500/30 border-0 h-11"
             size="lg"
             type="button"
-            onClick={() => signIn("google")}
+            onClick={() => signIn("google", { callbackUrl: "/user/dashboard" })}
           >
             SIGN IN WITH GOOGLE
           </Button>

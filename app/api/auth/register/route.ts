@@ -4,13 +4,21 @@ import { hash } from "bcrypt-ts"
 
 export async function POST(request: NextRequest) {
     try {
-        const { nama, email, password, role = "MAHASISWA" } = await request.json();
+        const { nama, email, password, role } = await request.json();
+
+        let userRole = role;
 
         if(!email.includes('unsil.ac.id')){
             return NextResponse.json(
                 { message: "Email harus berakhiran @unsil.ac.id" },
                 { status: 400 }
             );
+        }
+
+        if(email.endsWith('@student.unsil.ac.id')){
+            userRole = "MAHASISWA";
+        } else {
+            userRole = "ADMIN";
         }
 
         const existingUser = await prisma?.user?.findUnique({
@@ -26,6 +34,8 @@ export async function POST(request: NextRequest) {
             );
         }
 
+
+
         const hashedPassword = await hash(password, 10);
 
         const newUser = await prisma?.user?.create({
@@ -33,7 +43,7 @@ export async function POST(request: NextRequest) {
                 nama,
                 email,
                 password: hashedPassword,
-                role
+                role: userRole
             }
         });
 

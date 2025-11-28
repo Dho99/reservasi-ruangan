@@ -85,7 +85,7 @@ export function UserSidebar() {
 
           <div className="border-t border-slate-800 p-4">
             <Button
-              onClick={() => signOut()}
+              onClick={() => signOut({ callbackUrl: "/" })}
               className="flex items-center w-full rounded-lg px-3 py-2.5 text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
             >
               <FiLogOut className="mr-3 h-5 w-5" />
