@@ -3,6 +3,7 @@ import { Rajdhani } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SessionProvider } from "next-auth/react";
+import { Toaster } from "sonner";
 
 const rajdhani = Rajdhani({
   variable: "--font-rajdhani",
@@ -33,6 +34,7 @@ export default function RootLayout({
             {children}
           </ThemeProvider>
         </SessionProvider>
+        <Toaster position="top-right" richColors/>
       </body>
     </html>
   );

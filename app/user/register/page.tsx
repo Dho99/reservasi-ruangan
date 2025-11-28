@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ModernLoginLayout } from "@/components/auth/ModernLoginLayout";
-import { FiMail, FiLock } from "react-icons/fi";
+import { FiMail, FiLock, FiUser } from "react-icons/fi";
 import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,11 +17,28 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useState } from "react";
+import { api } from "@/lib/services/api";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
+import { services } from "@/lib/services";
+import { useRouter } from "next/navigation";
 
-const loginSchema = z.object({
-  email: z.string().min(1, "Email atau NIM harus diisi").email("Format email tidak valid"),
-  password: z.string().min(6, "Password minimal 6 karakter"),
-});
+const loginSchema = z
+  .object({
+    email: z
+      .string()
+      .min(1, "Email atau NIM harus diisi")
+      .email("Format email tidak valid"),
+    nama: z
+      .string()
+      .min(3, "Nama Lengkap harus diisi minimal 3 karakter"),
+    password: z.string().min(6, "Password minimal 6 karakter"),
+    confirmPassword: z.string().min(6, "Konfirmasi password minimal 6 karakter"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Konfirmasi password tidak cocok",
+    path: ["confirmPassword"],
+  });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
@@ -31,40 +48,34 @@ export default function UserRegisterPage() {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
+      nama: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
+  const router = useRouter();
+
   const onSubmit = async (data: LoginFormValues) => {
     setIsLoading(true);
-    try {
-      const result = await signIn("credentials", {
-        redirect: false, // Ubah ke false untuk handle manual
-        email: data.email,
-        password: data.password,
+      const { url, method } = services.auth.register();
+      api({
+        method,
+        url,
+        data
+      }).then(() => {
+        toast.success("Registrasi berhasil");
+        router.push('/user/login');
+        // window.location.href = "/user/login";
+      }).catch((error) => {
+        console.log(error);
+        if(error instanceof AxiosError) {
+          toast.error(error.response?.data?.message || "Terjadi kesalahan saat registrasi");
+        }
+      }).finally(() => {
+        setIsLoading(false);
       });
-      console.log(result);
-      if (result?.error) {
-
-        // Error dari credentials provider
-        form.setError("root", {
-          type: "manual",
-          message: result?.code
-        });
-      } else if (result?.ok) {
-        // Login berhasil, redirect manual
-        window.location.href = "/user/dashboard";
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      form.setError("root", {
-        type: "manual",
-        message: "Terjadi kesalahan saat login"
-      });
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   return (
@@ -79,6 +90,29 @@ export default function UserRegisterPage() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
           <FormField
             control={form.control}
+            name="nama"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <div className="relative">
+                    <FiUser className="absolute left-3 top-3 text-slate-400" />
+                    <Input
+                      {...field}
+                      placeholder="Nama Lengkap"
+                      type="text"
+                      autoCapitalize="none"
+                      autoComplete=""
+                      autoCorrect="off"
+                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage className="text-xs pl-3" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
@@ -90,7 +124,7 @@ export default function UserRegisterPage() {
                       placeholder="NIM / Email Kampus"
                       type="email"
                       autoCapitalize="none"
-                      autoComplete="email"
+                      autoComplete=""
                       autoCorrect="off"
                       className="pl-10 bg-slate-50 border-slate-200 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
                     />
@@ -123,26 +157,30 @@ export default function UserRegisterPage() {
             )}
           />
 
-          <div className="flex items-center justify-between text-sm">
-            {/* <FormField
-              control={form.control}
-              name="remember"
-              render={({ field }) => (
-                <FormItem className="flex items-center space-x-2">
-                  <FormControl>
-                    <input
-                      type="checkbox"
-                      checked={field.value}
-                      onChange={field.onChange}
-                      className="rounded border-slate-300 text-slate-600 focus:ring-slate-500"
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <div className="relative">
+                    <FiLock className="absolute left-3 top-3 text-slate-400" />
+                    <Input
+                      {...field}
+                      placeholder="Konfirmasi Password"
+                      type="password"
+                      autoComplete="new-password"
+                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
                     />
-                  </FormControl>
-                  <label className="text-slate-500 cursor-pointer select-none !mt-0">
-                    Remember me
-                  </label>
-                </FormItem>
-              )}
-            /> */}
+                  </div>
+                </FormControl>
+                <FormMessage className="text-xs pl-3" />
+              </FormItem>
+            )}
+          />
+
+          <div className="flex items-center justify-between text-sm">
+         
             <Link
               href="#"
               className="font-medium text-slate-600 hover:underline dark:text-slate-400"
@@ -163,7 +201,7 @@ export default function UserRegisterPage() {
             type="submit"
             disabled={isLoading}
           >
-            {isLoading ? "Loading..." : "SIGN IN"}
+            {isLoading ? "Loading..." : "REGISTER"}
           </Button>
 
           <Button

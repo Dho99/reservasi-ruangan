@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -5,13 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import { FiPlusSquare, FiCalendar, FiList, FiXCircle } from "react-icons/fi";
 
 export default function UserDashboard() {
+  
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-slate-900">Dashboard</h1>
         <p className="text-slate-500">Selamat datang kembali, Mahasiswa.</p>
       </div>
-
       {/* Ringkasan Status */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>

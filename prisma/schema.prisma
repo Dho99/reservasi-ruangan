@@ -1,8 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client"
@@ -28,35 +24,97 @@ enum Status {
 
 // Tabel Pengguna (User)
 model User {
-  id            String    @id @default(cuid()) // Primary Key string unik
+  id            String    @id @default(cuid())
   nama          String
   email         String    @unique
-  password      String    // Disimpan dalam bentuk hash (bcrypt/argon2)
+  password      String?   //sengaja, biar bisa null untuk OAuth
   role          Role      @default(MAHASISWA)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  auditLogs    AuditLog[]  // One-to-Many: Satu user bisa punya banyak log aktivitas
+  auditLogs    AuditLog[]  
+  emailVerified DateTime?
 
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  // Optional for WebAuthn support
+  Authenticator Authenticator[]
+ 
   // Relasi
-  reservations  Reservation[] // One-to-Many: Satu user bisa punya banyak reservasi
+  reservations  Reservation[] 
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+ 
+ model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+ 
+  @@id([identifier, token])
+}
+ 
+// Optional for WebAuthn support
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@id([userId, credentialID])
 }
 
 // Tabel Ruangan/Aset (Room)
 model Room {
   id          String   @id @default(cuid())
-  nama        String   // Contoh: "Aula Serbaguna", "Lab Komputer 1"
-  deskripsi   String?  // Deskripsi fasilitas
-  kapasitas   Int      // Jumlah orang maksimal
-  lokasi      String   // Contoh: "Gedung A Lt. 2"
-  gambar      String?  // URL ke penyimpanan gambar (jika ada)
-  isActive    Boolean  @default(true) // Soft delete: jika ruangan direnovasi/dihapus
+  nama        String   
+  deskripsi   String?  
+  kapasitas   Int      
+  lokasi      String   
+  gambar      String? 
+  isActive    Boolean  @default(true) 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  auditLogs  AuditLog[]  // One-to-Many: Satu ruangan bisa punya banyak log aktivitas
+  auditLogs  AuditLog[] 
 
   // Relasi
-  reservations Reservation[] // One-to-Many: Satu ruangan bisa dipesan berkali-kali
-  blockedSlots BlockedSlot[] // One-to-Many: Satu ruangan bisa punya banyak jadwal blokir
+  reservations Reservation[] 
+  blockedSlots BlockedSlot[] 
 }
 
 // Tabel Transaksi Reservasi (Reservation)
@@ -66,13 +124,13 @@ model Reservation {
   roomId          String
   waktuMulai      DateTime
   waktuSelesai    DateTime
-  keperluan       String   // Alasan peminjaman
+  keperluan       String 
   jumlahPeserta   Int
   status          Status   @default(MENUNGGU)
-  alasanPenolakan String?  // Diisi Admin jika status DITOLAK
+  alasanPenolakan String? 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  auditLogs    AuditLog[]  // One-to-Many: Satu reservasi bisa punya banyak log aktivitas
+  auditLogs    AuditLog[] 
 
   // Definisi Relasi (Foreign Keys)
   user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -83,13 +141,12 @@ model Reservation {
 }
 
 // Tabel Jadwal Blokir (BlockedSlot)
-// Digunakan Admin untuk menutup jadwal (misal: Pemeliharaan/Acara Internal)
 model BlockedSlot {
   id           String   @id @default(cuid())
   roomId       String
   waktuMulai   DateTime
   waktuSelesai DateTime
-  alasan       String   // Contoh: "Renovasi AC", "Rapat Rektorat"
+  alasan       String 
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
