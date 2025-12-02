@@ -17,28 +17,38 @@ class UserNotFoundError extends CredentialsSignin {
 // Notice this is only an object, not a full Auth.js instance
 export default {
     providers: [
-    // --- GOOGLE PROVIDER (Dengan Pembatasan Domain) ---
+    // --- GOOGLE PROVIDER (Support Gmail & Email Kampus) ---
     Google({
-      // KONFIGURASI TAMBAHAN PENTING:
       authorization: {
         params: {
-          // 'hd' (hosted domain): Meminta Google membatasi UI login hanya untuk domain ini.
-          // User tidak akan melihat opsi login dengan Gmail pribadi mereka.
-          hd: "unsil.ac.id", 
-          // 'prompt': Memaksa Google selalu menampilkan layar pilih akun (opsional)
+          // Memaksa Google selalu menampilkan layar pilih akun
           prompt: "select_account", 
         },
       },
       async profile(profile) {
+        const email = profile.email?.toLowerCase();
+        
+        // Tentukan role berdasarkan email
+        let role: "ADMIN" | "MAHASISWA" = "MAHASISWA";
+        
+        // Admin: email kampus staff (@unsil.ac.id tapi bukan @student.unsil.ac.id)
+        if (email?.endsWith("@unsil.ac.id") && !email?.includes("@student.")) {
+          role = "ADMIN";
+        }
+        // Mahasiswa: @student.unsil.ac.id atau @gmail.com
+        else if (email?.endsWith("@student.unsil.ac.id") || email?.endsWith("@gmail.com")) {
+          role = "MAHASISWA";
+        }
+        
         const user = {
           id: profile.sub,
           nama: profile.name,
           email: profile.email,
-          // password: profile.name.toLocaleLowerCase().replace(' ', '_'),
-          role: profile.email?.endsWith("@student.unsil.ac.id") ? ("MAHASISWA" as "MAHASISWA" | "ADMIN") :  ("ADMIN" as "MAHASISWA" | "ADMIN"),
+          role: role,
           image: profile.picture,
         };
 
+        console.log(`🔐 Google Profile: ${user.email} - Role: ${user.role}`);
         return user;
       },
     }),

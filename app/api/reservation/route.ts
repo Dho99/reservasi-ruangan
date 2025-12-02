@@ -3,11 +3,26 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const reservations = await prisma.reservation.findMany();
+    const reservations = await prisma.reservation.findMany({
+      include: {
+        room: true,
+        user: {
+          select: {
+            id: true,
+            nama: true,
+            email: true,
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
 
     return NextResponse.json({ data: reservations }, { status: 200 });
   } catch (err: unknown) {
-    NextResponse.json(
+    console.error("Error fetching reservations:", err);
+    return NextResponse.json(
       { message: err instanceof Error ? err.message : "Internal Server Error" },
       { status: 500 }
     );
@@ -26,6 +41,7 @@ export async function POST(request: NextRequest) {
       alasanPenolakan,
     } = await request.json();
 
+    // Check for existing reservations
     const checkExistingReservation = await prisma.reservation.findFirst({
       where: {
         roomId,
@@ -41,6 +57,26 @@ export async function POST(request: NextRequest) {
     if(checkExistingReservation){
         return NextResponse.json(
             { message: "Room is already booked for the selected time slot." },
+            { status: 409 }
+          );
+    }
+
+    // Check for blocked slots
+    const checkBlockedSlot = await prisma.blockedSlot.findFirst({
+      where: {
+        roomId,
+        waktuMulai: {
+          lt: waktuSelesai,
+        },
+        waktuSelesai: {
+          gt: waktuMulai,
+        },
+      },
+    });
+
+    if(checkBlockedSlot){
+        return NextResponse.json(
+            { message: "Ruangan sedang diblokir untuk waktu tersebut. Silakan pilih waktu lain." },
             { status: 409 }
           );
     }
