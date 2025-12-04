@@ -6,7 +6,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { api } from "@/lib/services/api";
+import { Calendar as CalendarIcon } from "lucide-react"
 import { toast } from "sonner";
 
 interface Room {
@@ -88,7 +95,7 @@ export default function ReservasiPage() {
       setTimeout(() => {
         router.push("/user/status");
       }, 1500);
-    } catch (error: any) {
+    } catch (error: any) { //eslint-disable-line
       if (error.response?.status === 409) {
         toast.error("Ruangan sudah dipesan pada waktu tersebut. Pilih waktu lain.");
       } else {
