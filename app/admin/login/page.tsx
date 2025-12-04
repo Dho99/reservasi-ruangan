@@ -64,27 +64,53 @@ export default function AdminLoginPage() {
       welcomeDescription="Kelola ruangan, jadwal, dan persetujuan dengan efisiensi tinggi. Selamat bekerja."
       sideImageBg="bg-gradient-to-br from-slate-800 to-black"
     >
-      <form onSubmit={handleSubmit} className="w-full space-y-4">
-        {error && (
-          <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg dark:bg-red-900/20 dark:border-red-800">
-            {error}
-          </div>
-        )}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div className="relative">
+                      <FiUser className="absolute left-3 top-3 text-slate-400" />
+                      <Input
+                        {...field}
+                        placeholder="Email"
+                        type="email"
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        disabled={isLoading}
+                        className="pl-10 bg-slate-50 border-slate-200 focus:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <div className="space-y-2">
-          <div className="relative">
-            <FiUser className="absolute left-3 top-3 text-slate-400" />
-            <Input
-              id="email"
-              placeholder="Email Admin"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoCapitalize="none"
-              autoCorrect="off"
-              disabled={isLoading}
-              className="pl-10 bg-slate-50 border-slate-200 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div className="relative">
+                      <FiLock className="absolute left-3 top-3 text-slate-400" />
+                      <Input
+                        {...field}
+                        placeholder="Password"
+                        type="password"
+                        autoComplete="current-password"
+                        disabled={isLoading}
+                        className="pl-10 bg-slate-50 border-slate-200 focus:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
           </div>
         </div>
@@ -101,21 +127,17 @@ export default function AdminLoginPage() {
               required
               autoComplete="current-password"
               disabled={isLoading}
-              className="pl-10 bg-slate-50 border-slate-200 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
-            />
-          </div>
-        </div>
+              className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-300 shadow-lg shadow-slate-500/30 border-0 h-11" 
+              size="lg"
+            >
+              {isLoading ? "Loading..." : "SIGN IN"}
+            </Button>
 
-        <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              id="remember"
-              className="rounded border-slate-300 text-slate-600 focus:ring-slate-500"
-            />
-            <label
-              htmlFor="remember"
-              className="text-slate-500 cursor-pointer select-none dark:text-slate-400"
+            <Button
+                className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-300 shadow-lg shadow-slate-500/30 border-0 h-11"
+                size="lg"
+                type="button"
+                onClick={() => signIn("google", { callbackUrl: "/admin/dashboard" })}
             >
               Remember me
             </label>

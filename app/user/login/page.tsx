@@ -64,31 +64,53 @@ export default function UserLoginPage() {
       welcomeDescription="Akses layanan reservasi ruangan kampus dengan mudah dan cepat. Masuk untuk melanjutkan."
       sideImageBg="bg-gradient-to-br from-slate-800 to-black"
     >
-      <form onSubmit={handleSubmit} className="w-full space-y-4">
-        {error && (
-          <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg dark:bg-red-900/20 dark:border-red-800">
-            {error}
-          </div>
-        )}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <div className="relative">
+                    <FiMail className="absolute left-3 top-3 text-slate-400" />
+                    <Input
+                      {...field}
+                      placeholder="NIM / Email Kampus"
+                      type="email"
+                      autoCapitalize="none"
+                      autoComplete="email"
+                      autoCorrect="off"
+                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage className="text-xs pl-3" />
+              </FormItem>
+            )}
+          />
 
-        <div className="space-y-2">
-          <div className="relative">
-            <FiMail className="absolute left-3 top-3 text-slate-400" />
-            <Input
-              id="email"
-              placeholder="NIM / Email Kampus"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoCapitalize="none"
-              autoComplete="email"
-              autoCorrect="off"
-              disabled={isLoading}
-              className="pl-10 bg-slate-50 border-slate-200 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
-            />
-          </div>
-        </div>
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <div className="relative">
+                    <FiLock className="absolute left-3 top-3 text-slate-400" />
+                    <Input
+                      {...field}
+                      placeholder="Password"
+                      type="password"
+                      autoComplete="current-password"
+                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage className="text-xs pl-3" />
+              </FormItem>
+            )}
+          />
 
         <div className="space-y-2">
           <div className="relative">
@@ -138,33 +160,20 @@ export default function UserLoginPage() {
           {isLoading ? "Signing in..." : "SIGN IN"}
         </Button>
 
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-slate-300 dark:border-slate-700" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white dark:bg-slate-900 px-2 text-slate-500 dark:text-slate-400">
-              Atau
-            </span>
-          </div>
-        </div>
+          <Button
+            className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-300 shadow-lg shadow-slate-500/30 border-0 h-11"
+            size="lg"
+            type="submit"
+            disabled={isLoading}
+          >
+            {isLoading ? "Loading..." : "SIGN IN"}
+          </Button>
 
-        <Button
-          type="button"
-          variant="outline"
-          disabled={isLoading}
-          onClick={handleGoogleSignIn}
-          className="w-full rounded-full h-11 border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
-        >
-          <FcGoogle className="mr-2 h-5 w-5" />
-          Sign in with Google
-        </Button>
-
-        <div className="text-center text-sm text-slate-500 dark:text-slate-400">
-          Belum punya akun?{" "}
-          <Link
-            href="/user/register"
-            className="font-medium text-slate-600 hover:underline dark:text-slate-400"
+          <Button
+            className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-300 shadow-lg shadow-slate-500/30 border-0 h-11"
+            size="lg"
+            type="button"
+            onClick={() => signIn("google", { callbackUrl: "/user/dashboard" })}
           >
             Daftar
           </Link>
