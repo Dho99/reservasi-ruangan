@@ -41,13 +41,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (account?.provider === "google") {
         const email = user.email?.toLowerCase();
         
-        // Allow: Gmail (@gmail.com) dan Email Kampus (@unsil.ac.id atau @student.unsil.ac.id)
-        const isGmail = email?.endsWith("@gmail.com");
-        const isUnsilEmail = email?.endsWith("@unsil.ac.id") || email?.endsWith("@student.unsil.ac.id");
+        // STRICT: Hanya allow Email Kampus UNSIL
+        const isUnsilEmail = email?.endsWith("unsil.ac.id");
         
-        if (!isGmail && !isUnsilEmail) {
+        if (!isUnsilEmail) {
           console.warn(`❌ Percobaan login dengan email tidak valid: ${user.email}`);
-          return false;
+          console.warn(`⚠️ Hanya email @unsil.ac.id atau @student.unsil.ac.id yang diperbolehkan`);
+          return false; // TOLAK LOGIN
         }
 
         // Check if user exists in database, if not create one

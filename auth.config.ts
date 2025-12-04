@@ -17,11 +17,15 @@ class UserNotFoundError extends CredentialsSignin {
 // Notice this is only an object, not a full Auth.js instance
 export default {
     providers: [
-    // --- GOOGLE PROVIDER (Support Gmail & Email Kampus) ---
+    // --- GOOGLE PROVIDER (Dengan Pembatasan Domain) ---
     Google({
+      // KONFIGURASI TAMBAHAN PENTING:
       authorization: {
         params: {
-          // Memaksa Google selalu menampilkan layar pilih akun
+          // 'hd' (hosted domain): Meminta Google membatasi UI login hanya untuk domain ini.
+          // User tidak akan melihat opsi login dengan Gmail pribadi mereka.
+          hd: "unsil.ac.id", 
+          // 'prompt': Memaksa Google selalu menampilkan layar pilih akun (opsional)
           prompt: "select_account", 
         },
       },
@@ -35,10 +39,11 @@ export default {
         if (email?.endsWith("@unsil.ac.id") && !email?.includes("@student.")) {
           role = "ADMIN";
         }
-        // Mahasiswa: @student.unsil.ac.id atau @gmail.com
-        else if (email?.endsWith("@student.unsil.ac.id") || email?.endsWith("@gmail.com")) {
+        // Mahasiswa: HANYA @student.unsil.ac.id
+        else if (email?.endsWith("@student.unsil.ac.id")) {
           role = "MAHASISWA";
         }
+        // Email lain akan ditolak di signIn callback
         
         const user = {
           id: profile.sub,

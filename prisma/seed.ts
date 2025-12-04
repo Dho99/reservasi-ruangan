@@ -8,14 +8,31 @@ const adapter = new PrismaPg({ connectionString })
 const prisma = new PrismaClient({ adapter })
 
 async function main() {
-  console.log('🌱 Seeding database...')
+  console.log('🌱 Starting fresh seed...')
+  
+  // Fresh seed: Delete all existing data (like Laravel's migrate:fresh)
+  console.log('🗑️  Deleting all existing data...')
+  
+  // Delete in correct order (respecting foreign key constraints)
+  await prisma.reservation.deleteMany({})
+  console.log('   ✓ Deleted all reservations')
+  
+  await prisma.blockedSlot.deleteMany({})
+  console.log('   ✓ Deleted all blocked slots')
+  
+  await prisma.room.deleteMany({})
+  console.log('   ✓ Deleted all rooms')
+  
+  await prisma.user.deleteMany({})
+  console.log('   ✓ Deleted all users')
+  
+  console.log('✅ Database cleared!')
+  console.log('\n🌱 Seeding fresh data...')
 
   // Create Admin User (Email Kampus)
   const adminPassword = await hash('admin123', 10)
-  const admin = await prisma.user.upsert({
-    where: { email: 'admin@unsil.ac.id' },
-    update: {},
-    create: {
+  const admin = await prisma.user.create({
+    data: {
       nama: 'Administrator',
       email: 'admin@unsil.ac.id',
       password: adminPassword,
@@ -26,10 +43,8 @@ async function main() {
 
   // Create Second Admin User (for testing)
   const admin2Password = await hash('admin123', 10)
-  const admin2 = await prisma.user.upsert({
-    where: { email: 'staff@unsil.ac.id' },
-    update: {},
-    create: {
+  const admin2 = await prisma.user.create({
+    data: {
       nama: 'Staff Admin',
       email: 'staff@unsil.ac.id',
       password: admin2Password,
@@ -40,10 +55,8 @@ async function main() {
 
   // Create Sample Student Users
   const studentPassword = await hash('student123', 10)
-  const student = await prisma.user.upsert({
-    where: { email: 'mahasiswa@student.unsil.ac.id' },
-    update: {},
-    create: {
+  const student = await prisma.user.create({
+    data: {
       nama: 'Mahasiswa Demo',
       email: 'mahasiswa@student.unsil.ac.id',
       password: studentPassword,
@@ -52,19 +65,17 @@ async function main() {
   })
   console.log('✅ Student user created:', student.email)
 
-  // Create Gmail Student User (for testing)
-  const gmailPassword = await hash('gmail123', 10)
-  const gmailStudent = await prisma.user.upsert({
-    where: { email: 'student.test@gmail.com' },
-    update: {},
-    create: {
-      nama: 'Gmail Student',
-      email: 'student.test@gmail.com',
-      password: gmailPassword,
+  // Create Test Student User
+  const student2Password = await hash('test123', 10)
+  const student2 = await prisma.user.create({
+    data: {
+      nama: 'Test Student',
+      email: 'test@student.unsil.ac.id',
+      password: student2Password,
       role: 'MAHASISWA',
     },
   })
-  console.log('✅ Gmail student user created:', gmailStudent.email)
+  console.log('✅ Test student user created:', student2.email)
 
   // Create Sample Rooms
   const rooms = [
@@ -99,10 +110,8 @@ async function main() {
   ]
 
   for (const room of rooms) {
-    const created = await prisma.room.upsert({
-      where: { id: room.nama }, // Using nama as temporary unique identifier
-      update: {},
-      create: room,
+    const created = await prisma.room.create({
+      data: room,
     })
     console.log('✅ Room created:', created.nama)
   }
@@ -115,11 +124,12 @@ async function main() {
   console.log('   • staff@unsil.ac.id / admin123')
   console.log('\n👨‍🎓 Student Users:')
   console.log('   • mahasiswa@student.unsil.ac.id / student123')
-  console.log('   • student.test@gmail.com / gmail123')
-  console.log('\n🔐 Google OAuth Login:')
-  console.log('   • Gmail accounts (@gmail.com) → MAHASISWA role')
-  console.log('   • Staff emails (@unsil.ac.id) → ADMIN role')
-  console.log('   • Student emails (@student.unsil.ac.id) → MAHASISWA role')
+  console.log('   • test@student.unsil.ac.id / test123')
+  console.log('\n🔐 Google OAuth Login (STRICT DOMAIN):')
+  console.log('   • ✅ Staff emails (@unsil.ac.id) → ADMIN role')
+  console.log('   • ✅ Student emails (@student.unsil.ac.id) → MAHASISWA role')
+  console.log('   • ❌ Gmail accounts (@gmail.com) → DITOLAK')
+  console.log('   • ❌ Email domain lain → DITOLAK')
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
 }
 
