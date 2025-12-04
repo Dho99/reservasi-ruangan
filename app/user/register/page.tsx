@@ -103,7 +103,7 @@ export default function UserRegisterPage() {
                       autoCapitalize="none"
                       autoComplete=""
                       autoCorrect="off"
-                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
+                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
                     />
                   </div>
                 </FormControl>
@@ -126,7 +126,7 @@ export default function UserRegisterPage() {
                       autoCapitalize="none"
                       autoComplete=""
                       autoCorrect="off"
-                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
+                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
                     />
                   </div>
                 </FormControl>
@@ -148,7 +148,7 @@ export default function UserRegisterPage() {
                       placeholder="Password"
                       type="password"
                       autoComplete="current-password"
-                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
+                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
                     />
                   </div>
                 </FormControl>
@@ -170,7 +170,7 @@ export default function UserRegisterPage() {
                       placeholder="Konfirmasi Password"
                       type="password"
                       autoComplete="new-password"
-                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
+                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
                     />
                   </div>
                 </FormControl>
@@ -196,7 +196,7 @@ export default function UserRegisterPage() {
           )}
 
           <Button
-            className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200 shadow-lg shadow-slate-500/30 border-0 h-11"
+            className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-300 shadow-lg shadow-slate-500/30 border-0 h-11"
             size="lg"
             type="submit"
             disabled={isLoading}
@@ -205,7 +205,7 @@ export default function UserRegisterPage() {
           </Button>
 
           <Button
-            className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200 shadow-lg shadow-slate-500/30 border-0 h-11"
+            className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-300 shadow-lg shadow-slate-500/30 border-0 h-11"
             size="lg"
             type="button"
             onClick={() => signIn("google")}
