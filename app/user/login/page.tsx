@@ -1,70 +1,57 @@
 "use client";
 
+import { signIn } from "next-auth/react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ModernLoginLayout } from "@/components/auth/ModernLoginLayout";
 import { FiMail, FiLock } from "react-icons/fi";
-import { signIn } from "next-auth/react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-
-const loginSchema = z.object({
-  email: z.string().min(1, "Email atau NIM harus diisi").email("Format email tidak valid"),
-  password: z.string().min(6, "Password minimal 6 karakter"),
-});
-
-type LoginFormValues = z.infer<typeof loginSchema>;
+import { FcGoogle } from "react-icons/fc";
 
 export default function UserLoginPage() {
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
-
-  const onSubmit = async (data: LoginFormValues) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
     setIsLoading(true);
+
     try {
       const result = await signIn("credentials", {
-        redirect: false, // Ubah ke false untuk handle manual
-        email: data.email,
-        password: data.password,
+        email,
+        password,
+        redirect: false,
       });
-      console.log(result);
-      if (result?.error) {
 
-        // Error dari credentials provider
-        form.setError("root", {
-          type: "manual",
-          message: result?.code
-        });
-      } else if (result?.ok) {
-        // Login berhasil, redirect manual
-        router.push("/user/dashboard");
+      if (result?.error) {
+        setError("Email atau password salah");
+        setIsLoading(false);
+        return;
       }
-    } catch (error) {
-      console.error("Login error:", error);
-      form.setError("root", {
-        type: "manual",
-        message: "Terjadi kesalahan saat login"
+
+      // Redirect to dashboard after successful login
+      router.push("/user/dashboard");
+      router.refresh();
+    } catch (err) {
+      setError("Terjadi kesalahan. Silakan coba lagi.");
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    try {
+      await signIn("google", {
+        callbackUrl: "/user/dashboard",
       });
-    } finally {
+    } catch (err) {
+      setError("Gagal login dengan Google");
       setIsLoading(false);
     }
   };
@@ -125,20 +112,53 @@ export default function UserLoginPage() {
             )}
           />
 
-          <div className="flex items-center justify-between text-sm">
-            <Link
-              href="#"
-              className="font-medium text-slate-600 hover:underline dark:text-slate-400"
-            >
-              Forgot password?
-            </Link>
+        <div className="space-y-2">
+          <div className="relative">
+            <FiLock className="absolute left-3 top-3 text-slate-400" />
+            <Input
+              id="password"
+              placeholder="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+              disabled={isLoading}
+              className="pl-10 bg-slate-50 border-slate-200 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
+            />
           </div>
+        </div>
 
-          {form.formState.errors.root && (
-            <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-400 rounded-lg border border-red-200 dark:border-red-800">
-              {form.formState.errors.root.message}
-            </div>
-          )}
+        <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="remember"
+              className="rounded border-slate-300 text-slate-600 focus:ring-slate-500"
+            />
+            <label
+              htmlFor="remember"
+              className="text-slate-500 cursor-pointer select-none dark:text-slate-400"
+            >
+              Remember me
+            </label>
+          </div>
+          <Link
+            href="#"
+            className="font-medium text-slate-600 hover:underline dark:text-slate-400"
+          >
+            Forgot password?
+          </Link>
+        </div>
+
+        <Button
+          type="submit"
+          disabled={isLoading}
+          className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200 shadow-lg shadow-slate-500/30 border-0 h-11"
+          size="lg"
+        >
+          {isLoading ? "Signing in..." : "SIGN IN"}
+        </Button>
 
           <Button
             className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-300 shadow-lg shadow-slate-500/30 border-0 h-11"
@@ -155,10 +175,10 @@ export default function UserLoginPage() {
             type="button"
             onClick={() => signIn("google", { callbackUrl: "/user/dashboard" })}
           >
-            SIGN IN WITH GOOGLE
-          </Button>
-        </form>
-      </Form>
+            Daftar
+          </Link>
+        </div>
+      </form>
     </ModernLoginLayout>
   );
 }

@@ -1,5 +1,3 @@
-
-
 generator client {
   provider = "prisma-client"
   output   = "./src/generated/prisma"
@@ -9,39 +7,21 @@ datasource db {
   provider = "postgresql"
 }
 
-// Enums untuk standardisasi nilai status dan peran
-enum Role {
-  ADMIN
-  MAHASISWA
-}
-
-enum Status {
-  MENUNGGU   // Pending
-  DISETUJUI  // Approved
-  DITOLAK    // Rejected
-  DIBATALKAN // Canceled
-}
-
-// Tabel Pengguna (User)
 model User {
-  id            String    @id @default(cuid())
+  id            String          @id @default(cuid())
   nama          String
-  email         String    @unique
-  password      String?   //sengaja, biar bisa null untuk OAuth
-  role          Role      @default(MAHASISWA)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  auditLogs    AuditLog[]  
-  emailVerified DateTime?
-
+  email         String          @unique
+  password      String?
+  role          Role            @default(MAHASISWA)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
   image         String?
+  emailVerified DateTime?
   accounts      Account[]
-  sessions      Session[]
-  // Optional for WebAuthn support
+  auditLogs     AuditLog[]
   Authenticator Authenticator[]
- 
-  // Relasi
-  reservations  Reservation[] 
+  reservations  Reservation[]
+  sessions      Session[]
 }
 
 model Account {
@@ -56,12 +36,10 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
- 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@id([provider, providerAccountId])
 }
 
@@ -69,21 +47,19 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
- 
- model VerificationToken {
+
+model VerificationToken {
   identifier String
   token      String
   expires    DateTime
- 
+
   @@id([identifier, token])
 }
- 
-// Optional for WebAuthn support
+
 model Authenticator {
   credentialID         String  @unique
   userId               String
@@ -93,87 +69,84 @@ model Authenticator {
   credentialDeviceType String
   credentialBackedUp   Boolean
   transports           String?
- 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+  user                 User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@id([userId, credentialID])
 }
 
-// Tabel Ruangan/Aset (Room)
 model Room {
-  id          String   @id @default(cuid())
-  nama        String   
-  deskripsi   String?  
-  kapasitas   Int      
-  lokasi      String   
-  gambar      String? 
-  isActive    Boolean  @default(true) 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  auditLogs  AuditLog[] 
-
-  // Relasi
-  reservations Reservation[] 
-  blockedSlots BlockedSlot[] 
+  id           String        @id @default(cuid())
+  nama         String
+  deskripsi    String?
+  kapasitas    Int
+  lokasi       String
+  gambar       String?
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  auditLogs    AuditLog[]
+  blockedSlots BlockedSlot[]
+  reservations Reservation[]
 }
 
-// Tabel Transaksi Reservasi (Reservation)
 model Reservation {
-  id              String   @id @default(cuid())
+  id              String     @id @default(cuid())
   userId          String
   roomId          String
   waktuMulai      DateTime
   waktuSelesai    DateTime
-  keperluan       String 
+  keperluan       String
   jumlahPeserta   Int
-  status          Status   @default(MENUNGGU)
-  alasanPenolakan String? 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  auditLogs    AuditLog[] 
+  status          Status     @default(MENUNGGU)
+  alasanPenolakan String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  auditLogs       AuditLog[]
+  room            Room       @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  // Definisi Relasi (Foreign Keys)
-  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  room    Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
-
-  // Indeks untuk mempercepat pencarian berdasarkan tanggal
   @@index([waktuMulai, waktuSelesai])
 }
 
-// Tabel Jadwal Blokir (BlockedSlot)
 model BlockedSlot {
   id           String   @id @default(cuid())
   roomId       String
   waktuMulai   DateTime
   waktuSelesai DateTime
-  alasan       String 
+  alasan       String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-
-  // Definisi Relasi
-  room    Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  room         Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
 
   @@index([waktuMulai, waktuSelesai])
 }
 
 model AuditLog {
-  id          String   @id @default(cuid())
-  userId      String
-  roomId    String?  
+  id            String       @id @default(cuid())
+  userId        String
+  roomId        String?
   reservationId String?
-  action      String 
-  description String? 
-  timestamp   DateTime @default(now())
-
-  // Definisi Relasi
-  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  room    Room? @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  reservation    Reservation? @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  action        String
+  description   String?
+  timestamp     DateTime     @default(now())
+  reservation   Reservation? @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  room          Room?        @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([timestamp])
 }
 
+enum Role {
+  ADMIN
+  MAHASISWA
+}
 
+enum Status {
+  MENUNGGU
+  DISETUJUI
+  DITOLAK
+  DIBATALKAN
+}
 
 enum Target_Type {
   ROOM

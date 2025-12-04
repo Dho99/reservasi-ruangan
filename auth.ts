@@ -27,8 +27,8 @@ declare module "next-auth/jwt" {
 
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  // 1. Hubungkan dengan Database via Prisma Adapter
-  adapter: PrismaAdapter(prisma),
+  // Note: Tidak menggunakan adapter karena JWT strategy
+  // adapter: PrismaAdapter(prisma),
   ...authConfig,
   
   session: {
@@ -36,27 +36,73 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
 
   callbacks: {
-    async signIn({ user }) {
-      
-      // Validasi ketat: Hanya izinkan email dengan akhiran domain yang benar
-      const isAllowedDomain = user.email?.endsWith("unsil.ac.id");
+    async signIn({ user, account }) {
+      // Validasi domain untuk Google OAuth
+      if (account?.provider === "google") {
+        const email = user.email?.toLowerCase();
+        
+        // STRICT: Hanya allow Email Kampus UNSIL
+        const isUnsilEmail = email?.endsWith("unsil.ac.id");
+        
+        if (!isUnsilEmail) {
+          console.warn(`❌ Percobaan login dengan email tidak valid: ${user.email}`);
+          console.warn(`⚠️ Hanya email @unsil.ac.id atau @student.unsil.ac.id yang diperbolehkan`);
+          return false; // TOLAK LOGIN
+        }
 
-      if (!isAllowedDomain) {
-        // Jika domain salah, tolak akses. User akan dilempar ke halaman error.
-        console.warn(`Percobaan akses tidak sah dari: ${user.email}`);
-        return false; 
+        // Check if user exists in database, if not create one
+        try {
+          const existingUser = await prisma.user.findUnique({
+            where: { email: user.email! }
+          });
+
+          if (!existingUser) {
+            // Create new user from Google profile
+            const role = email?.endsWith("@unsil.ac.id") && !email?.includes("@student.") 
+              ? "ADMIN" 
+              : "MAHASISWA";
+
+            await prisma.user.create({
+              data: {
+                email: user.email!,
+                nama: user.name || "User",
+                role: role,
+                password: "", // Empty password for OAuth users
+              }
+            });
+            console.log(`✅ User baru dibuat dari Google: ${user.email}`);
+          } else {
+            console.log(`✅ Login Google berhasil: ${user.email}`);
+          }
+        } catch (error) {
+          console.error("Error checking/creating user:", error);
+          return false;
+        }
       }
       
-      return true; // Izinkan login/registrasi
+      // Credentials provider tidak perlu validasi domain (sudah di database)
+      return true;
     },
 
     // Memasukkan data Role & ID ke dalam Token JWT
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
-        token.id = user.id
-        token.role = user.role as "ADMIN" | "MAHASISWA"
+        // For OAuth, get user data from database
+        if (account?.provider === "google") {
+          const dbUser = await prisma.user.findUnique({
+            where: { email: user.email! }
+          });
+          if (dbUser) {
+            token.id = dbUser.id;
+            token.role = dbUser.role;
+          }
+        } else {
+          // For credentials
+          token.id = user.id;
+          token.role = user.role as "ADMIN" | "MAHASISWA";
+        }
       }
-      return token
+      return token;
     },
 
     // Memasukkan data dari Token ke Sesi Client-Side

@@ -7,6 +7,19 @@ export async function GET() {
         const pendingReservations = await prisma.reservation.findMany({
             where: {
                 status: "MENUNGGU"
+            },
+            include: {
+                room: true,
+                user: {
+                    select: {
+                        id: true,
+                        nama: true,
+                        email: true,
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: 'desc'
             }
         });
 

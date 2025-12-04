@@ -3,7 +3,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const blockedRooms = await prisma.blockedSlot.findMany();
+    const blockedRooms = await prisma.blockedSlot.findMany({
+      include: {
+        room: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
 
     return NextResponse.json(
       {
@@ -12,6 +19,7 @@ export async function GET() {
       { status: 200 }
     );
   } catch (err: unknown) {
+    console.error("Error fetching blocked slots:", err);
     return NextResponse.json(
       {
         message: err instanceof Error ? err.message : "Internal Server Error",
@@ -28,8 +36,8 @@ export async function POST(request: NextRequest) {
     const newBlockedRoom = await prisma.blockedSlot.create({
       data: {
         roomId,
-        waktuMulai: new Date(waktuMulai).toDateString(),
-        waktuSelesai: new Date(waktuSelesai).toDateString(),
+        waktuMulai: new Date(waktuMulai),
+        waktuSelesai: new Date(waktuSelesai),
         alasan,
       },
     });
@@ -41,6 +49,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (err: unknown) {
+    console.error("Error creating blocked slot:", err);
     return NextResponse.json(
       {
         message: err instanceof Error ? err.message : "Internal Server Error",

@@ -30,15 +30,30 @@ export default {
         },
       },
       async profile(profile) {
+        const email = profile.email?.toLowerCase();
+        
+        // Tentukan role berdasarkan email
+        let role: "ADMIN" | "MAHASISWA" = "MAHASISWA";
+        
+        // Admin: email kampus staff (@unsil.ac.id tapi bukan @student.unsil.ac.id)
+        if (email?.endsWith("@unsil.ac.id") && !email?.includes("@student.")) {
+          role = "ADMIN";
+        }
+        // Mahasiswa: HANYA @student.unsil.ac.id
+        else if (email?.endsWith("@student.unsil.ac.id")) {
+          role = "MAHASISWA";
+        }
+        // Email lain akan ditolak di signIn callback
+        
         const user = {
           id: profile.sub,
           nama: profile.name,
           email: profile.email,
-          // password: profile.name.toLocaleLowerCase().replace(' ', '_'),
-          role: profile.email?.endsWith("@student.unsil.ac.id") ? ("MAHASISWA" as "MAHASISWA" | "ADMIN") :  ("ADMIN" as "MAHASISWA" | "ADMIN"),
+          role: role,
           image: profile.picture,
         };
 
+        console.log(`🔐 Google Profile: ${user.email} - Role: ${user.role}`);
         return user;
       },
     }),
