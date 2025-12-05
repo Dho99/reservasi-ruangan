@@ -433,17 +433,17 @@ export default function LaporanPage() {
           </div>
 
           {/* Table - Print View (All Data) */}
-          <div className="hidden print:block overflow-x-auto rounded-lg border border-slate-200">
-            <table className="w-full text-sm text-left">
-              <thead className="text-xs text-slate-700 uppercase bg-slate-100 border-b border-slate-200">
+          <div className="hidden print:block">
+            <table className="w-full text-xs border-collapse">
+              <thead className="text-xs text-slate-900 uppercase bg-slate-100">
                 <tr>
-                  <th className="px-4 py-2 border border-slate-300">No</th>
-                  <th className="px-4 py-2 border border-slate-300">Ruangan</th>
-                  <th className="px-4 py-2 border border-slate-300">Pemohon</th>
-                  <th className="px-4 py-2 border border-slate-300">Keperluan</th>
-                  <th className="px-4 py-2 border border-slate-300">Tanggal & Jam</th>
-                  <th className="px-4 py-2 border border-slate-300">Peserta</th>
-                  <th className="px-4 py-2 border border-slate-300">Status</th>
+                  <th className="px-2 py-2 border border-slate-400 font-bold">No</th>
+                  <th className="px-2 py-2 border border-slate-400 font-bold">Ruangan</th>
+                  <th className="px-2 py-2 border border-slate-400 font-bold">Pemohon</th>
+                  <th className="px-2 py-2 border border-slate-400 font-bold">Keperluan</th>
+                  <th className="px-2 py-2 border border-slate-400 font-bold">Tanggal & Jam</th>
+                  <th className="px-2 py-2 border border-slate-400 font-bold">Peserta</th>
+                  <th className="px-2 py-2 border border-slate-400 font-bold">Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -451,38 +451,36 @@ export default function LaporanPage() {
                   <tr>
                     <td
                       colSpan={7}
-                      className="px-4 py-6 text-center text-slate-500 border border-slate-300"
+                      className="px-2 py-4 text-center text-slate-500 border border-slate-400"
                     >
                       Tidak ada data reservasi
                     </td>
                   </tr>
                 ) : (
                   printData.map((res, index) => (
-                    <tr key={res.id} className="border-b border-slate-200">
-                      <td className="px-4 py-2 border border-slate-300">{index + 1}</td>
-                      <td className="px-4 py-2 font-medium text-slate-900 border border-slate-300">
+                    <tr key={res.id}>
+                      <td className="px-2 py-2 border border-slate-400 text-center">{index + 1}</td>
+                      <td className="px-2 py-2 font-medium text-slate-900 border border-slate-400">
                         {res.room.nama}
                       </td>
-                      <td className="px-4 py-2 text-slate-700 border border-slate-300">
+                      <td className="px-2 py-2 text-slate-700 border border-slate-400">
                         {res.user.nama}
                       </td>
-                      <td className="px-4 py-2 text-slate-600 border border-slate-300">
+                      <td className="px-2 py-2 text-slate-600 border border-slate-400">
                         {res.keperluan}
                       </td>
-                      <td className="px-4 py-2 text-slate-600 border border-slate-300">
-                        {formatDate(res.waktuMulai)}, {formatTime(res.waktuMulai)}
+                      <td className="px-2 py-2 text-slate-600 border border-slate-400">
+                        {formatDate(res.waktuMulai)}<br/>{formatTime(res.waktuMulai)}
                       </td>
-                      <td className="px-4 py-2 text-slate-600 border border-slate-300">
+                      <td className="px-2 py-2 text-slate-600 border border-slate-400 text-center">
                         {res.jumlahPeserta}
                       </td>
-                      <td className="px-4 py-2 border border-slate-300">
-                        <span className={`px-2 py-1 text-xs rounded ${
-                          res.status === "DISETUJUI" ? "bg-green-100 text-green-800" :
-                          res.status === "MENUNGGU" ? "bg-yellow-100 text-yellow-800" :
-                          res.status === "DITOLAK" ? "bg-red-100 text-red-800" :
-                          "bg-slate-100 text-slate-800"
-                        }`}>
-                          {getStatusText(res.status)}
+                      <td className="px-2 py-2 border border-slate-400 text-center">
+                        <span className="text-xs font-semibold">
+                          {res.status === "DISETUJUI" && "✓"}
+                          {res.status === "MENUNGGU" && "⏳"}
+                          {res.status === "DITOLAK" && "✗"}
+                          {res.status === "DIBATALKAN" && "⊘"}
                         </span>
                       </td>
                     </tr>
@@ -543,12 +541,21 @@ export default function LaporanPage() {
           /* Remove margins and padding for print */
           body {
             margin: 0;
-            padding: 20px;
+            padding: 10px;
+          }
+          
+          /* Fit content to page width */
+          .space-y-6 {
+            width: 100% !important;
+            max-width: 100% !important;
           }
           
           /* Ensure table fits on page */
           table {
             page-break-inside: auto;
+            width: 100% !important;
+            table-layout: fixed !important;
+            font-size: 10px !important;
           }
           
           tr {
@@ -560,9 +567,36 @@ export default function LaporanPage() {
             display: table-header-group;
           }
           
+          /* Adjust column widths for print */
+          th, td {
+            padding: 4px 6px !important;
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
+          }
+          
+          /* Specific column widths */
+          th:nth-child(1), td:nth-child(1) { width: 5% !important; }  /* No */
+          th:nth-child(2), td:nth-child(2) { width: 15% !important; } /* Ruangan */
+          th:nth-child(3), td:nth-child(3) { width: 15% !important; } /* Pemohon */
+          th:nth-child(4), td:nth-child(4) { width: 25% !important; } /* Keperluan */
+          th:nth-child(5), td:nth-child(5) { width: 20% !important; } /* Tanggal */
+          th:nth-child(6), td:nth-child(6) { width: 8% !important; }  /* Peserta */
+          th:nth-child(7), td:nth-child(7) { width: 12% !important; } /* Status */
+          
           /* Print all data, not just current page */
           .overflow-x-auto {
             overflow: visible !important;
+          }
+          
+          /* Hide scrollbar */
+          ::-webkit-scrollbar {
+            display: none;
+          }
+          
+          /* Ensure proper page orientation */
+          @page {
+            size: A4 landscape;
+            margin: 10mm;
           }
         }
       `}</style>
