@@ -200,6 +200,29 @@ export default function ReservasiPage() {
       return;
     }
 
+    // Validasi waktu tidak boleh di masa lalu
+    const waktuMulai = new Date(formData.waktuMulai);
+    const waktuSelesai = new Date(formData.waktuSelesai);
+    const sekarang = new Date();
+    
+    if (waktuMulai < sekarang) {
+      toast.error("Tidak dapat membuat reservasi di waktu yang sudah berlalu");
+      setLoading(false);
+      return;
+    }
+
+    if (waktuSelesai < sekarang) {
+      toast.error("Waktu selesai tidak boleh di masa lalu");
+      setLoading(false);
+      return;
+    }
+
+    if (waktuSelesai <= waktuMulai) {
+      toast.error("Waktu selesai harus lebih besar dari waktu mulai");
+      setLoading(false);
+      return;
+    }
+
     // Validasi jumlah peserta dengan kapasitas ruangan
     if (selectedRoom && parseInt(formData.jumlahPeserta) > selectedRoom.kapasitas) {
       toast.error(`Jumlah peserta tidak boleh melebihi kapasitas ruangan (${selectedRoom.kapasitas} orang)`);
@@ -208,9 +231,6 @@ export default function ReservasiPage() {
     }
 
     // Validasi jam operasional ruangan
-    const waktuMulai = new Date(formData.waktuMulai);
-    const waktuSelesai = new Date(formData.waktuSelesai);
-    
     const jamMulai = waktuMulai.toTimeString().slice(0, 5); // HH:mm
     const jamSelesai = waktuSelesai.toTimeString().slice(0, 5); // HH:mm
     
@@ -305,11 +325,15 @@ export default function ReservasiPage() {
                 <Input
                   type="datetime-local"
                   required
+                  min={new Date().toISOString().slice(0, 16)}
                   value={formData.waktuMulai}
                   onChange={(e) =>
                     setFormData({ ...formData, waktuMulai: e.target.value })
                   }
                 />
+                <p className="text-xs text-slate-500">
+                  Pilih waktu minimal dari sekarang
+                </p>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">
@@ -318,11 +342,15 @@ export default function ReservasiPage() {
                 <Input
                   type="datetime-local"
                   required
+                  min={formData.waktuMulai || new Date().toISOString().slice(0, 16)}
                   value={formData.waktuSelesai}
                   onChange={(e) =>
                     setFormData({ ...formData, waktuSelesai: e.target.value })
                   }
                 />
+                <p className="text-xs text-slate-500">
+                  Harus lebih besar dari waktu mulai
+                </p>
               </div>
             </div>
 
