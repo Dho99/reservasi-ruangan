@@ -72,7 +72,7 @@ export default function KelolaRuanganPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-slate-500 dark:text-slate-400">Loading...</div>
+        <div className="text-slate-500">Loading...</div>
       </div>
     );
   }
@@ -81,10 +81,10 @@ export default function KelolaRuanganPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
             Kelola Ruangan
           </h1>
-          <p className="text-slate-500 dark:text-slate-400">
+          <p className="text-slate-500">
             Tambah, edit, atau hapus data ruangan.
           </p>
         </div>
@@ -98,7 +98,7 @@ export default function KelolaRuanganPage() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {rooms.map((room) => (
           <Card key={room.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-            <div className="h-40 bg-slate-200 dark:bg-slate-700 w-full flex items-center justify-center text-slate-500 relative">
+            <div className="h-40 bg-slate-200 w-full flex items-center justify-center text-slate-500 relative">
               {room.gambar ? (
                 <img
                   src={room.gambar}
@@ -115,10 +115,10 @@ export default function KelolaRuanganPage() {
             <CardContent className="p-6">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                  <h3 className="text-lg font-bold text-slate-900">
                     {room.nama}
                   </h3>
-                  <div className="flex items-center text-slate-500 dark:text-slate-400 text-sm mt-1">
+                  <div className="flex items-center text-slate-500 text-sm mt-1">
                     <FiMapPin className="mr-1" /> {room.lokasi}
                   </div>
                 </div>
@@ -128,12 +128,12 @@ export default function KelolaRuanganPage() {
               </div>
 
               {room.deskripsi && (
-                <p className="text-sm text-slate-600 dark:text-slate-300 mb-4 line-clamp-2">
+                <p className="text-sm text-slate-600 mb-4 line-clamp-2">
                   {room.deskripsi}
                 </p>
               )}
 
-              <div className="flex gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex gap-2 pt-2 border-t border-slate-100">
                 <Button
                   variant="outline"
                   size="sm"
@@ -157,8 +157,8 @@ export default function KelolaRuanganPage() {
 
       {rooms.length === 0 && (
         <div className="text-center py-12">
-          <FiMapPin className="mx-auto mb-4 text-slate-300 dark:text-slate-600" size={64} />
-          <p className="text-slate-500 dark:text-slate-400 mb-4">
+          <FiMapPin className="mx-auto mb-4 text-slate-300" size={64} />
+          <p className="text-slate-500 mb-4">
             Belum ada ruangan. Klik "Tambah Ruangan" untuk menambahkan.
           </p>
           <Link href="/admin/ruangan/tambah">
@@ -178,12 +178,12 @@ export default function KelolaRuanganPage() {
           roomToDelete ? (
             <div className="space-y-2">
               <p>Apakah Anda yakin ingin menghapus ruangan ini?</p>
-              <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-md text-sm">
+              <div className="bg-slate-100 p-3 rounded-md text-sm">
                 <p><strong>Nama:</strong> {roomToDelete.nama}</p>
                 <p><strong>Lokasi:</strong> {roomToDelete.lokasi}</p>
                 <p><strong>Kapasitas:</strong> {roomToDelete.kapasitas} orang</p>
               </div>
-              <p className="text-red-600 dark:text-red-400 text-sm">
+              <p className="text-red-600 text-sm">
                 Tindakan ini tidak dapat dibatalkan!
               </p>
             </div>
@@ -194,8 +194,10 @@ export default function KelolaRuanganPage() {
         onConfirm={handleDeleteConfirm}
         confirmText="Ya, Hapus"
         cancelText="Batal"
-        variant="danger"
+        variant="destructive"
       />
     </div>
   );
 }
+
+

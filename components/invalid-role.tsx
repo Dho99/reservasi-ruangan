@@ -40,15 +40,20 @@ export default function InvalidRole({
             <div className={cn("w-full max-w-lg align-center justify-center m-auto", className)}>
                 <Card className="border-dashed">
                     <CardHeader className="text-center space-y-3">
-                        <div className="mx-auto h-12 w-12 rounded-full bg-red-50 dark:bg-red-950/30 flex items-center justify-center">
-                            <Lock className="h-6 w-6 text-red-600 dark:text-red-400" />
+                        <div className="mx-auto h-12 w-12 rounded-full bg-red-50 flex items-center justify-center">
+                            <Lock className="h-6 w-6 text-red-600" />
                         </div>
                         <CardTitle className="text-xl font-semibold">{title}</CardTitle>
-                        <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                            <Badge variant="warning">403</Badge>
-                            <span>
-                                {description} Tidak ada akses ke <b>{menuName}</b>.
-                            </span>
+                        <div className="flex flex-col items-center justify-center gap-2 text-sm text-muted-foreground">
+                            <Badge variant="warning">403 - Forbidden</Badge>
+                            <p className="text-center max-w-md">
+                                {description}
+                            </p>
+                            {menuName && menuName !== "menu ini" && (
+                                <p className="text-center">
+                                    Tidak ada akses ke <b>{menuName}</b>.
+                                </p>
+                            )}
                         </div>
                     </CardHeader>
                     <CardContent>
@@ -57,7 +62,7 @@ export default function InvalidRole({
                                 Kembali
                             </Button>
                             <Button asChild>
-                                <Link href={homeHref}>Kembali</Link>
+                                <Link href={homeHref}>Dashboard Saya</Link>
                             </Button>
                             {actions}
                         </div>

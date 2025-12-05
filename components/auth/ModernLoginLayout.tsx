@@ -2,7 +2,6 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -29,28 +28,24 @@ export function ModernLoginLayout({
   const isLoginPage = pathname.includes("/login");
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-slate-50 p-4 dark:bg-slate-950 transition-colors duration-300">
-      <div className="absolute top-4 right-4 z-50">
-        <ThemeToggle />
-      </div>
-      
-      <div className="relative flex w-full max-w-4xl overflow-hidden rounded-3xl bg-white shadow-2xl dark:bg-slate-900 flex-col md:flex-row min-h-[600px]">
+    <div className="flex min-h-screen w-full items-center justify-center bg-slate-50 p-4 transition-colors duration-300">
+      <div className="relative flex w-full max-w-4xl overflow-hidden rounded-3xl bg-white shadow-2xl flex-col md:flex-row min-h-[600px]">
         
         {/* Left Side - Form */}
         <div className="flex w-full flex-col items-center justify-center p-8 md:w-1/2 lg:p-12 z-10 relative">
           <div className="w-full max-w-sm space-y-8 text-center md:text-left">
             <div className="space-y-2 text-center">
-              <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+              <h1 className="text-3xl font-bold tracking-tight text-slate-900">
                 {title}
               </h1>
-              <p className="text-slate-500 dark:text-slate-400">{description}</p>
+              <p className="text-slate-500">{description}</p>
             </div>
             
             {children}
 
-            <div className="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">
+            <div className="mt-4 text-center text-sm text-slate-500">
               {isLoginPage ? "Don't" : ""} have an account?{" "}
-              <Link href={`/user/${isLoginPage ? "register" : "login"}`} className="font-medium text-blue-600 hover:underline dark:text-blue-400">
+              <Link href={`/user/${isLoginPage ? "register" : "login"}`} className="font-medium text-blue-600 hover:underline">
                 {isLoginPage ? "Register here" : "Login here"}
               </Link>
             </div>
@@ -62,7 +57,7 @@ export function ModernLoginLayout({
             {/* Wave SVG */}
             <div className="absolute left-0 top-0 h-full w-full z-10">
                  <svg
-                    className="h-full w-auto text-white dark:text-slate-900 fill-current"
+                    className="h-full w-auto text-white fill-current"
                     viewBox="0 0 100 100"
                     preserveAspectRatio="none"
                     style={{ transform: "scaleX(-1)" }}
@@ -77,7 +72,7 @@ export function ModernLoginLayout({
                      <svg 
                         viewBox="0 0 500 150" 
                         preserveAspectRatio="none" 
-                        className="h-full w-full text-white dark:text-slate-900 fill-current transform scale-y-[2.5] origin-top"
+                        className="h-full w-full text-white fill-current transform scale-y-[2.5] origin-top"
                         style={{ transform: 'rotate(90deg) scale(2, 1) translateY(-30%)' }}
                      >
                         <path d="M0.00,49.98 C149.99,150.00 349.20,-49.98 500.00,49.98 L500.00,150.00 L0.00,150.00 Z" />

@@ -159,7 +159,7 @@ export default function JadwalPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-slate-500 dark:text-slate-400">Loading...</div>
+        <div className="text-slate-500">Loading...</div>
       </div>
     );
   }
@@ -167,10 +167,10 @@ export default function JadwalPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900">
           Jadwal Ketersediaan
         </h1>
-        <p className="text-slate-500 dark:text-slate-400">
+        <p className="text-slate-500">
           Cek ketersediaan ruangan sebelum mengajukan.
         </p>
       </div>
@@ -205,7 +205,7 @@ export default function JadwalPage() {
           return (
             <Card key={room.id} className="overflow-hidden hover:shadow-lg transition-shadow">
               {/* Room Image */}
-              <div className="h-40 bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-500 relative overflow-hidden">
+              <div className="h-40 bg-slate-200 flex items-center justify-center text-slate-500 relative overflow-hidden">
                 {room.gambar ? (
                   <img
                     src={room.gambar}
@@ -238,12 +238,12 @@ export default function JadwalPage() {
                     <FiUsers size={12} /> {room.kapasitas}
                   </Badge>
                 </CardTitle>
-                <div className="flex items-center text-sm text-slate-500 dark:text-slate-400">
+                <div className="flex items-center text-sm text-slate-500">
                   <FiMapPin className="mr-1" size={14} />
                   {room.lokasi}
                 </div>
                 {room.deskripsi && (
-                  <p className="text-sm text-slate-600 dark:text-slate-300 line-clamp-2">
+                  <p className="text-sm text-slate-600 line-clamp-2">
                     {room.deskripsi}
                   </p>
                 )}
@@ -251,7 +251,7 @@ export default function JadwalPage() {
 
               <CardContent>
                 <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-slate-900 dark:text-white flex items-center gap-2">
+                  <h4 className="text-sm font-medium text-slate-900 flex items-center gap-2">
                     <FiCalendar size={14} />
                     Jadwal {new Date(selectedDate).toLocaleDateString("id-ID", {
                       day: "numeric",
@@ -261,13 +261,13 @@ export default function JadwalPage() {
                   </h4>
                   <div className="space-y-2">
                     {schedule.map((item, idx) => (
-                      <div key={idx} className="flex justify-between items-center text-sm p-2 rounded-md bg-slate-50 dark:bg-slate-800">
+                      <div key={idx} className="flex justify-between items-center text-sm p-2 rounded-md bg-slate-50">
                         <div className="flex-1">
-                          <span className="text-slate-600 dark:text-slate-300 font-medium">
+                          <span className="text-slate-600 font-medium">
                             {item.time}
                           </span>
                           {item.status === "diblokir" && item.alasan && (
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                            <p className="text-xs text-slate-500 mt-1">
                               {item.alasan}
                             </p>
                           )}
@@ -284,7 +284,7 @@ export default function JadwalPage() {
                           }
                           className={
                             item.status === "diblokir"
-                              ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 border-red-300 dark:border-red-700"
+                              ? "bg-red-100 text-red-800 border-red-300"
                               : ""
                           }
                         >
@@ -318,8 +318,8 @@ export default function JadwalPage() {
 
       {filteredRooms.length === 0 && (
         <div className="text-center py-12">
-          <FiMapPin className="mx-auto mb-4 text-slate-300 dark:text-slate-600" size={64} />
-          <p className="text-slate-500 dark:text-slate-400">
+          <FiMapPin className="mx-auto mb-4 text-slate-300" size={64} />
+          <p className="text-slate-500">
             Tidak ada ruangan ditemukan
           </p>
         </div>
@@ -327,3 +327,5 @@ export default function JadwalPage() {
     </div>
   );
 }
+
+

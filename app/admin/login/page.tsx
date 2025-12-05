@@ -64,57 +64,27 @@ export default function AdminLoginPage() {
       welcomeDescription="Kelola ruangan, jadwal, dan persetujuan dengan efisiensi tinggi. Selamat bekerja."
       sideImageBg="bg-gradient-to-br from-slate-800 to-black"
     >
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className="relative">
-                      <FiUser className="absolute left-3 top-3 text-slate-400" />
-                      <Input
-                        {...field}
-                        placeholder="Email"
-                        type="email"
-                        autoCapitalize="none"
-                        autoCorrect="off"
-                        disabled={isLoading}
-                        className="pl-10 bg-slate-50 border-slate-200 focus:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className="relative">
-                      <FiLock className="absolute left-3 top-3 text-slate-400" />
-                      <Input
-                        {...field}
-                        placeholder="Password"
-                        type="password"
-                        autoComplete="current-password"
-                        disabled={isLoading}
-                        className="pl-10 bg-slate-50 border-slate-200 focus:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+      <form onSubmit={handleSubmit} className="w-full space-y-4">
+        {/* Email Input */}
+        <div className="space-y-2">
+          <div className="relative">
+            <FiUser className="absolute left-3 top-3 text-slate-400" />
+            <Input
+              id="email"
+              placeholder="Email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoCapitalize="none"
+              autoCorrect="off"
+              disabled={isLoading}
+              className="pl-10 bg-slate-50 border-slate-200 focus:bg-white transition-all rounded-full"
             />
           </div>
         </div>
 
+        {/* Password Input */}
         <div className="space-y-2">
           <div className="relative">
             <FiLock className="absolute left-3 top-3 text-slate-400" />
@@ -127,61 +97,77 @@ export default function AdminLoginPage() {
               required
               autoComplete="current-password"
               disabled={isLoading}
-              className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-300 shadow-lg shadow-slate-500/30 border-0 h-11" 
-              size="lg"
-            >
-              {isLoading ? "Loading..." : "SIGN IN"}
-            </Button>
+              className="pl-10 bg-slate-50 border-slate-200 focus:bg-white transition-all rounded-full"
+            />
+          </div>
+        </div>
 
-            <Button
-                className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-300 shadow-lg shadow-slate-500/30 border-0 h-11"
-                size="lg"
-                type="button"
-                onClick={() => signIn("google", { callbackUrl: "/admin/dashboard" })}
+        {/* Remember Me & Forgot Password */}
+        <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="remember"
+              className="rounded border-slate-300 text-slate-600 focus:ring-slate-500"
+            />
+            <label
+              htmlFor="remember"
+              className="text-slate-500 cursor-pointer select-none"
             >
               Remember me
             </label>
           </div>
           <Link
             href="#"
-            className="font-medium text-slate-600 hover:underline dark:text-slate-400"
+            className="font-medium text-slate-600 hover:underline"
           >
             Forgot password?
           </Link>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="p-3 text-sm text-red-600 bg-red-50 rounded-lg border border-red-200">
+            {error}
+          </div>
+        )}
+
+        {/* Sign In Button */}
         <Button
           type="submit"
           disabled={isLoading}
-          className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200 shadow-lg shadow-slate-500/30 border-0 h-11"
+          className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white shadow-lg shadow-slate-500/30 border-0 h-11"
           size="lg"
         >
           {isLoading ? "Signing in..." : "SIGN IN"}
         </Button>
 
+        {/* Divider */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-slate-300 dark:border-slate-700" />
+            <span className="w-full border-t border-slate-300" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white dark:bg-slate-900 px-2 text-slate-500 dark:text-slate-400">
+            <span className="bg-white px-2 text-slate-500">
               Atau
             </span>
           </div>
         </div>
 
+        {/* Google Sign In Button */}
         <Button
           type="button"
           variant="outline"
           disabled={isLoading}
           onClick={handleGoogleSignIn}
-          className="w-full rounded-full h-11 border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
+          className="w-full rounded-full h-11 border-slate-300 hover:bg-slate-50"
         >
           <FcGoogle className="mr-2 h-5 w-5" />
           Sign in with Google
         </Button>
 
-        <div className="text-center text-xs text-slate-500 dark:text-slate-400 mt-4">
+        {/* Admin Notice */}
+        <div className="text-center text-xs text-slate-500 mt-4">
           <p>🔒 Admin access only</p>
           <p>Use your @unsil.ac.id email</p>
         </div>
@@ -189,3 +175,5 @@ export default function AdminLoginPage() {
     </ModernLoginLayout>
   );
 }
+
+

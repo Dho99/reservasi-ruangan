@@ -18,6 +18,7 @@ interface Stats {
 
 interface Reservation {
   id: string;
+  userId: string;
   status: string;
   waktuMulai: string;
   room: {
@@ -106,7 +107,7 @@ export default function UserDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-slate-500 dark:text-slate-400">Loading...</div>
+        <div className="text-slate-500">Loading...</div>
       </div>
     );
   }
@@ -114,11 +115,11 @@ export default function UserDashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900">
           Dashboard
         </h1>
-        <p className="text-slate-500 dark:text-slate-400">
-          Selamat datang kembali, {session?.user?.name || "Mahasiswa"}.
+        <p className="text-slate-500">
+          Selamat datang kembali, Mahasiswa.
         </p>
       </div>
 
@@ -131,7 +132,7 @@ export default function UserDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.total}</div>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-slate-500">
               Semua riwayat reservasi
             </p>
           </CardContent>
@@ -144,7 +145,7 @@ export default function UserDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.pending}</div>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-slate-500">
               Pengajuan belum diproses
             </p>
           </CardContent>
@@ -157,7 +158,7 @@ export default function UserDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.approved}</div>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-slate-500">
               Reservasi aktif & selesai
             </p>
           </CardContent>
@@ -170,7 +171,7 @@ export default function UserDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.rejected}</div>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-slate-500">
               Pengajuan tidak disetujui
             </p>
           </CardContent>
@@ -182,7 +183,7 @@ export default function UserDashboard() {
         <Link href="/user/reservasi">
           <Button
             variant="outline"
-            className="w-full h-32 flex flex-col gap-2 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950"
+            className="w-full h-32 flex flex-col gap-2 hover:border-blue-500 hover:bg-blue-50"
           >
             <FiPlusSquare size={32} className="text-blue-600" />
             <span className="text-lg">Ajukan Reservasi</span>
@@ -192,7 +193,7 @@ export default function UserDashboard() {
         <Link href="/user/jadwal">
           <Button
             variant="outline"
-            className="w-full h-32 flex flex-col gap-2 hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-950"
+            className="w-full h-32 flex flex-col gap-2 hover:border-green-500 hover:bg-green-50"
           >
             <FiCalendar size={32} className="text-green-600" />
             <span className="text-lg">Lihat Jadwal</span>
@@ -202,7 +203,7 @@ export default function UserDashboard() {
         <Link href="/user/status">
           <Button
             variant="outline"
-            className="w-full h-32 flex flex-col gap-2 hover:border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-950"
+            className="w-full h-32 flex flex-col gap-2 hover:border-yellow-500 hover:bg-yellow-50"
           >
             <FiList size={32} className="text-yellow-600" />
             <span className="text-lg">Status Pengajuan</span>
@@ -212,7 +213,7 @@ export default function UserDashboard() {
         <Link href="/user/pembatalan">
           <Button
             variant="outline"
-            className="w-full h-32 flex flex-col gap-2 hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-950"
+            className="w-full h-32 flex flex-col gap-2 hover:border-red-500 hover:bg-red-50"
           >
             <FiXCircle size={32} className="text-red-600" />
             <span className="text-lg">Pembatalan</span>
@@ -235,7 +236,7 @@ export default function UserDashboard() {
         <CardContent>
           {recentReservations.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-slate-500 dark:text-slate-400 mb-4">
+              <p className="text-slate-500 mb-4">
                 Belum ada reservasi
               </p>
               <Link href="/user/reservasi">
@@ -247,13 +248,13 @@ export default function UserDashboard() {
               {recentReservations.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 last:pb-0 last:border-0"
+                  className="flex items-center justify-between border-b border-slate-100 pb-4 last:pb-0 last:border-0"
                 >
                   <div>
-                    <p className="font-medium text-slate-900 dark:text-white">
+                    <p className="font-medium text-slate-900">
                       {item.room.nama}
                     </p>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                    <p className="text-sm text-slate-500">
                       {formatDate(item.waktuMulai)}
                     </p>
                   </div>
@@ -267,3 +268,5 @@ export default function UserDashboard() {
     </div>
   );
 }
+
+

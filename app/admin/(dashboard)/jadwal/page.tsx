@@ -206,7 +206,7 @@ export default function KelolaJadwalPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-slate-500 dark:text-slate-400">Loading...</div>
+        <div className="text-slate-500">Loading...</div>
       </div>
     );
   }
@@ -220,10 +220,10 @@ export default function KelolaJadwalPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
             Kelola Jadwal
           </h1>
-          <p className="text-slate-500 dark:text-slate-400">
+          <p className="text-slate-500">
             Atur jadwal manual atau blokir ruangan untuk maintenance.
           </p>
         </div>
@@ -249,7 +249,7 @@ export default function KelolaJadwalPage() {
             <select
               value={selectedRoomId}
               onChange={(e) => setSelectedRoomId(e.target.value)}
-              className="h-10 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm dark:text-white"
+              className="h-10 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
             >
               <option value="all">Semua Ruangan</option>
               {rooms.map((room) => (
@@ -279,7 +279,7 @@ export default function KelolaJadwalPage() {
 
             {/* Room rows */}
             {displayRooms.length === 0 ? (
-              <p className="text-center py-8 text-slate-500 dark:text-slate-400">
+              <p className="text-center py-8 text-slate-500">
                 Tidak ada ruangan
               </p>
             ) : (
@@ -288,17 +288,17 @@ export default function KelolaJadwalPage() {
                 return (
                   <div
                     key={room.id}
-                    className="grid grid-cols-12 gap-1 items-center py-2 border-b border-slate-50 dark:border-slate-800"
+                    className="grid grid-cols-12 gap-1 items-center py-2 border-b border-slate-50"
                   >
-                    <div className="col-span-2 font-medium pl-4 text-slate-900 dark:text-white">
+                    <div className="col-span-2 font-medium pl-4 text-slate-900">
                       {room.nama}
                     </div>
-                    <div className="col-span-10 relative h-10 bg-slate-100 dark:bg-slate-800 rounded-md overflow-hidden">
+                    <div className="col-span-10 relative h-10 bg-slate-100 rounded-md overflow-hidden">
                       {/* Reservations */}
                       {schedule.reservations.map((res) => (
                         <div
                           key={res.id}
-                          className="absolute top-0 h-full bg-blue-200 dark:bg-blue-900 border-l-4 border-blue-500 flex items-center px-2 text-xs text-blue-800 dark:text-blue-200 truncate"
+                          className="absolute top-0 h-full bg-blue-200 border-l-4 border-blue-500 flex items-center px-2 text-xs text-blue-800 truncate"
                           style={{
                             left: `${getTimePosition(res.waktuMulai)}%`,
                             width: `${getTimeWidth(
@@ -318,7 +318,7 @@ export default function KelolaJadwalPage() {
                       {schedule.blocked.map((slot) => (
                         <div
                           key={slot.id}
-                          className="absolute top-0 h-full bg-red-100 dark:bg-red-900 border-l-4 border-red-500 flex items-center justify-between px-2 text-xs text-red-800 dark:text-red-200 truncate group"
+                          className="absolute top-0 h-full bg-red-100 border-l-4 border-red-500 flex items-center justify-between px-2 text-xs text-red-800 truncate group"
                           style={{
                             left: `${getTimePosition(slot.waktuMulai)}%`,
                             width: `${getTimeWidth(
@@ -337,7 +337,7 @@ export default function KelolaJadwalPage() {
                             onClick={() => handleUnblockClick(slot)}
                             className="opacity-0 group-hover:opacity-100 transition-opacity"
                           >
-                            <FiX className="text-red-600 dark:text-red-400" />
+                            <FiX className="text-red-600" />
                           </button>
                         </div>
                       ))}
@@ -360,12 +360,12 @@ export default function KelolaJadwalPage() {
       {/* Block Schedule Modal - Custom */}
       {showBlockModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-lg max-w-md w-full">
-            <div className="p-6 border-b border-slate-200 dark:border-slate-700">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+          <div className="bg-white rounded-lg max-w-md w-full">
+            <div className="p-6 border-b border-slate-200">
+              <h2 className="text-xl font-bold text-slate-900">
                 Blokir Jadwal
               </h2>
-              <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+              <p className="text-sm text-slate-600 mt-1">
                 Blokir ruangan untuk maintenance atau keperluan khusus
               </p>
             </div>
@@ -379,7 +379,7 @@ export default function KelolaJadwalPage() {
                   onChange={(e) =>
                     setBlockFormData({ ...blockFormData, roomId: e.target.value })
                   }
-                  className="flex h-10 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm dark:text-white"
+                  className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
                 >
                   <option value="">-- Pilih Ruangan --</option>
                   {rooms.map((room) => (
@@ -434,7 +434,7 @@ export default function KelolaJadwalPage() {
               </div>
             </div>
             
-            <div className="p-6 border-t border-slate-200 dark:border-slate-700 flex justify-end gap-3">
+            <div className="p-6 border-t border-slate-200 flex justify-end gap-3">
               <Button
                 variant="outline"
                 onClick={() => setShowBlockModal(false)}
@@ -461,7 +461,7 @@ export default function KelolaJadwalPage() {
           slotToUnblock ? (
             <div className="space-y-2">
               <span className="block">Apakah Anda yakin ingin menghapus blokir jadwal ini?</span>
-              <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-md text-sm space-y-1">
+              <div className="bg-slate-100 p-3 rounded-md text-sm space-y-1">
                 <div>
                   <strong>Ruangan:</strong> {slotToUnblock.room.nama}
                 </div>
@@ -481,8 +481,10 @@ export default function KelolaJadwalPage() {
         onConfirm={handleUnblockConfirm}
         confirmText="Ya, Hapus"
         cancelText="Batal"
-        variant="danger"
+        variant="destructive"
       />
     </div>
   );
 }
+
+

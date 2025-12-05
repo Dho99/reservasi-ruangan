@@ -168,10 +168,10 @@ export default function KelolaPengajuanPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
             Kelola Pengajuan
           </h1>
-          <p className="text-slate-500 dark:text-slate-400">
+          <p className="text-slate-500">
             Tinjau dan proses pengajuan reservasi yang masuk.
           </p>
         </div>
@@ -203,12 +203,12 @@ export default function KelolaPengajuanPage() {
               {filteredPendingReservations.map((reservation) => (
                 <div
                   key={reservation.id}
-                  className="flex flex-col p-4 border rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"
+                  className="flex flex-col p-4 border rounded-lg border-slate-200 bg-slate-50"
                 >
                   {/* Header dengan Badge */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-bold text-slate-900 dark:text-white">
+                      <span className="font-bold text-slate-900">
                         {reservation.room.nama}
                       </span>
                       <Badge variant="warning">Pending</Badge>
@@ -217,25 +217,25 @@ export default function KelolaPengajuanPage() {
 
                   {/* Info Detail */}
                   <div className="space-y-2 mb-4">
-                    <p className="text-sm text-slate-600 dark:text-slate-300">
+                    <p className="text-sm text-slate-600">
                       <span className="font-medium">Pemohon:</span>{" "}
                       {reservation.user.nama}
                     </p>
-                    <p className="text-sm text-slate-600 dark:text-slate-300 break-all">
+                    <p className="text-sm text-slate-600 break-all">
                       <span className="font-medium">Email:</span>{" "}
                       {reservation.user.email}
                     </p>
-                    <p className="text-sm text-slate-600 dark:text-slate-300">
+                    <p className="text-sm text-slate-600">
                       <span className="font-medium">Waktu:</span>{" "}
                       {formatDate(reservation.waktuMulai)},{" "}
                       {formatTime(reservation.waktuMulai)} -{" "}
                       {formatTime(reservation.waktuSelesai)}
                     </p>
-                    <p className="text-sm text-slate-600 dark:text-slate-300">
+                    <p className="text-sm text-slate-600">
                       <span className="font-medium">Peserta:</span>{" "}
                       {reservation.jumlahPeserta} orang
                     </p>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 italic bg-slate-100 dark:bg-slate-700 p-2 rounded">
+                    <p className="text-sm text-slate-500 italic bg-slate-100 p-2 rounded">
                       "{reservation.keperluan}"
                     </p>
                   </div>
@@ -281,7 +281,7 @@ export default function KelolaPengajuanPage() {
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-              <thead className="text-xs text-slate-500 uppercase bg-slate-50 dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700">
+              <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
                 <tr>
                   <th className="px-6 py-3">Ruangan</th>
                   <th className="px-6 py-3">Pemohon</th>
@@ -293,7 +293,7 @@ export default function KelolaPengajuanPage() {
                 {historyReservations.slice(0, 5).map((reservation) => (
                   <tr
                     key={reservation.id}
-                    className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800"
+                    className="bg-white border-b border-slate-100"
                   >
                     <td className="px-6 py-4 font-medium">
                       {reservation.room.nama}
@@ -338,14 +338,14 @@ export default function KelolaPengajuanPage() {
               {historyReservations.slice(0, 5).map((reservation) => (
                 <div
                   key={reservation.id}
-                  className="p-3 border rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"
+                  className="p-3 border rounded-lg border-slate-200 bg-slate-50"
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
-                      <h4 className="font-semibold text-slate-900 dark:text-white text-sm">
+                      <h4 className="font-semibold text-slate-900 text-sm">
                         {reservation.room.nama}
                       </h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      <p className="text-xs text-slate-500 mt-1">
                         {reservation.user.nama}
                       </p>
                     </div>
@@ -361,7 +361,7 @@ export default function KelolaPengajuanPage() {
                         : "Ditolak"}
                     </Badge>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">
+                  <p className="text-xs text-slate-600">
                     {formatDate(reservation.waktuMulai)}
                   </p>
                 </div>
@@ -380,7 +380,7 @@ export default function KelolaPengajuanPage() {
           selectedReservation ? (
             <div className="space-y-2">
               <p>Apakah Anda yakin ingin menyetujui reservasi ini?</p>
-              <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-md text-sm">
+              <div className="bg-slate-100 p-3 rounded-md text-sm">
                 <p><strong>Ruangan:</strong> {selectedReservation.room.nama}</p>
                 <p><strong>Pemohon:</strong> {selectedReservation.user.nama}</p>
                 <p><strong>Waktu:</strong> {formatDate(selectedReservation.waktuMulai)}, {formatTime(selectedReservation.waktuMulai)} - {formatTime(selectedReservation.waktuSelesai)}</p>
@@ -405,7 +405,7 @@ export default function KelolaPengajuanPage() {
           selectedReservation ? (
             <div className="space-y-4">
               <p>Apakah Anda yakin ingin menolak reservasi ini?</p>
-              <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-md text-sm">
+              <div className="bg-slate-100 p-3 rounded-md text-sm">
                 <p><strong>Ruangan:</strong> {selectedReservation.room.nama}</p>
                 <p><strong>Pemohon:</strong> {selectedReservation.user.nama}</p>
               </div>
@@ -425,8 +425,10 @@ export default function KelolaPengajuanPage() {
         onConfirm={handleRejectConfirm}
         confirmText="Ya, Tolak"
         cancelText="Batal"
-        variant="danger"
+        variant="destructive"
       />
     </div>
   );
 }
+
+

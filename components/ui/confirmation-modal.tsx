@@ -20,7 +20,7 @@ interface ConfirmationModalProps {
   onConfirm: () => void;
   confirmText?: string;
   cancelText?: string;
-  variant?: "default" | "danger";
+  variant?: "default" | "danger" | "destructive";
 }
 
 export function ConfirmationModal({
@@ -45,8 +45,8 @@ export function ConfirmationModal({
           <AlertDialogAction
             onClick={onConfirm}
             className={
-              variant === "danger"
-                ? "bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700"
+              variant === "danger" || variant === "destructive"
+                ? "bg-red-600 hover:bg-red-700"
                 : ""
             }
           >

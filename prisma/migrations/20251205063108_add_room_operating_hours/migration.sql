@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Room" ADD COLUMN     "jamBuka" TEXT NOT NULL DEFAULT '07:00',
+ADD COLUMN     "jamTutup" TEXT NOT NULL DEFAULT '17:00';

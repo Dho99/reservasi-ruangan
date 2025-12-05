@@ -140,7 +140,7 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-slate-500 dark:text-slate-400">Loading dashboard...</div>
+        <div className="text-slate-500">Loading dashboard...</div>
       </div>
     );
   }
@@ -148,10 +148,10 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900">
           Admin Dashboard
         </h1>
-        <p className="text-slate-500 dark:text-slate-400">
+        <p className="text-slate-500">
           Ringkasan statistik dan manajemen sistem.
         </p>
       </div>
@@ -165,7 +165,7 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalReservationsToday}</div>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-slate-500">
               Total reservasi untuk hari ini
             </p>
           </CardContent>
@@ -178,7 +178,7 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.pendingReservations}</div>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-slate-500">
               Pengajuan menunggu persetujuan
             </p>
           </CardContent>
@@ -191,7 +191,7 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalRooms}</div>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-slate-500">
               Ruangan tersedia di sistem
             </p>
           </CardContent>
@@ -204,7 +204,7 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.blockedSlots}</div>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-slate-500">
               Slot waktu yang diblokir
             </p>
           </CardContent>
@@ -216,7 +216,7 @@ export default function AdminDashboard() {
         <Link href="/admin/pengajuan">
           <Button
             variant="outline"
-            className="w-full h-24 flex flex-col gap-2 items-center justify-center hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950"
+            className="w-full h-24 flex flex-col gap-2 items-center justify-center hover:border-blue-500 hover:bg-blue-50"
           >
             <FiFileText size={24} className="text-blue-600" />
             <span>Kelola Pengajuan</span>
@@ -231,7 +231,7 @@ export default function AdminDashboard() {
         <Link href="/admin/ruangan">
           <Button
             variant="outline"
-            className="w-full h-24 flex flex-col gap-2 items-center justify-center hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-950"
+            className="w-full h-24 flex flex-col gap-2 items-center justify-center hover:border-indigo-500 hover:bg-indigo-50"
           >
             <FiBox size={24} className="text-indigo-600" />
             <span>Data Ruangan</span>
@@ -241,7 +241,7 @@ export default function AdminDashboard() {
         <Link href="/admin/jadwal">
           <Button
             variant="outline"
-            className="w-full h-24 flex flex-col gap-2 items-center justify-center hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-950"
+            className="w-full h-24 flex flex-col gap-2 items-center justify-center hover:border-green-500 hover:bg-green-50"
           >
             <FiCalendar size={24} className="text-green-600" />
             <span>Atur Jadwal</span>
@@ -251,7 +251,7 @@ export default function AdminDashboard() {
         <Link href="/admin/laporan">
           <Button
             variant="outline"
-            className="w-full h-24 flex flex-col gap-2 items-center justify-center hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800"
+            className="w-full h-24 flex flex-col gap-2 items-center justify-center hover:border-slate-500 hover:bg-slate-50"
           >
             <FiTrendingUp size={24} className="text-slate-600" />
             <span>Laporan</span>
@@ -273,7 +273,7 @@ export default function AdminDashboard() {
         </CardHeader>
         <CardContent>
           {recentReservations.length === 0 ? (
-            <p className="text-center py-8 text-slate-500 dark:text-slate-400">
+            <p className="text-center py-8 text-slate-500">
               Belum ada aktivitas reservasi
             </p>
           ) : (
@@ -281,23 +281,23 @@ export default function AdminDashboard() {
               {recentReservations.map((reservation) => (
                 <div
                   key={reservation.id}
-                  className="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  className="flex items-center justify-between p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-100">
                       {getStatusIcon(reservation.status)}
                     </div>
                     <div>
-                      <p className="font-medium text-slate-900 dark:text-white">
+                      <p className="font-medium text-slate-900">
                         {reservation.room.nama}
                       </p>
-                      <p className="text-sm text-slate-500 dark:text-slate-400">
+                      <p className="text-sm text-slate-500">
                         {reservation.user.nama} • {formatDate(reservation.waktuMulai)}{" "}
                         {formatTime(reservation.waktuMulai)}
                       </p>
                     </div>
                   </div>
-                  <div className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                  <div className="text-sm font-medium text-slate-600">
                     {getStatusText(reservation.status)}
                   </div>
                 </div>
@@ -309,3 +309,5 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
+

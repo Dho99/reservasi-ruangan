@@ -97,10 +97,10 @@ export default function TambahRuanganPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
             Tambah Ruangan Baru
           </h1>
-          <p className="text-slate-500 dark:text-slate-400">
+          <p className="text-slate-500">
             Tambahkan ruangan baru ke sistem
           </p>
         </div>
@@ -171,13 +171,13 @@ export default function TambahRuanganPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, deskripsi: e.target.value })
                 }
-                className="flex min-h-[100px] w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex min-h-[100px] w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             {/* Image Upload Section */}
             <div className="space-y-3">
-              <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              <Label className="text-sm font-medium text-slate-700">
                 Gambar Ruangan (opsional)
               </Label>
               
@@ -223,7 +223,7 @@ export default function TambahRuanganPage() {
                       </Button>
                     )}
                   </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-slate-500">
                     Format: JPG, PNG, GIF. Maksimal 2MB
                   </p>
                 </div>
@@ -238,7 +238,7 @@ export default function TambahRuanganPage() {
                       setImagePreview(e.target.value);
                     }}
                   />
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-slate-500">
                     Masukkan URL gambar dari internet
                   </p>
                 </div>
@@ -247,10 +247,10 @@ export default function TambahRuanganPage() {
               {/* Image Preview */}
               {imagePreview && (
                 <div className="mt-3">
-                  <Label className="text-xs text-slate-500 dark:text-slate-400 mb-2 block">
+                  <Label className="text-xs text-slate-500 mb-2 block">
                     Preview:
                   </Label>
-                  <div className="relative w-full h-64 bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+                  <div className="relative w-full h-64 bg-slate-100 rounded-lg overflow-hidden border border-slate-200">
                     <img
                       src={imagePreview}
                       alt="Preview"
@@ -266,7 +266,7 @@ export default function TambahRuanganPage() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-3 pt-4 border-t border-slate-200 dark:border-slate-700">
+            <div className="flex gap-3 pt-4 border-t border-slate-200">
               <Button 
                 type="submit" 
                 disabled={saving}
@@ -292,4 +292,6 @@ export default function TambahRuanganPage() {
     </div>
   );
 }
+
+
 

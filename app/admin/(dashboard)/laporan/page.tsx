@@ -21,7 +21,9 @@ interface Reservation {
   keperluan: string;
   jumlahPeserta: number;
   status: string;
+  roomId: string;
   room: {
+    id: string;
     nama: string;
   };
   user: {
@@ -218,7 +220,7 @@ export default function LaporanPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-slate-500 dark:text-slate-400">Loading...</div>
+        <div className="text-slate-500">Loading...</div>
       </div>
     );
   }
@@ -227,10 +229,10 @@ export default function LaporanPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
             Laporan Penggunaan
           </h1>
-          <p className="text-slate-500 dark:text-slate-400">
+          <p className="text-slate-500">
             Rekapitulasi data reservasi dan penggunaan ruangan.
           </p>
         </div>
@@ -247,9 +249,9 @@ export default function LaporanPage() {
       <Card>
         <CardContent className="p-4 space-y-4">
           {/* Filter Bar */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-slate-50 rounded-lg">
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              <label className="text-xs font-medium text-slate-500">
                 Dari Tanggal
               </label>
               <Input
@@ -258,11 +260,11 @@ export default function LaporanPage() {
                 onChange={(e) =>
                   setFilters({ ...filters, startDate: e.target.value })
                 }
-                className="bg-white dark:bg-slate-900"
+                className="bg-white"
               />
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              <label className="text-xs font-medium text-slate-500">
                 Sampai Tanggal
               </label>
               <Input
@@ -271,11 +273,11 @@ export default function LaporanPage() {
                 onChange={(e) =>
                   setFilters({ ...filters, endDate: e.target.value })
                 }
-                className="bg-white dark:bg-slate-900"
+                className="bg-white"
               />
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              <label className="text-xs font-medium text-slate-500">
                 Ruangan
               </label>
               <select
@@ -283,7 +285,7 @@ export default function LaporanPage() {
                 onChange={(e) =>
                   setFilters({ ...filters, roomId: e.target.value })
                 }
-                className="flex h-10 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">Semua Ruangan</option>
                 {rooms.map((room) => (
@@ -301,17 +303,17 @@ export default function LaporanPage() {
           </div>
 
           {/* Summary Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-blue-50 rounded-lg">
             <div>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-500">
                 Total Reservasi
               </p>
-              <p className="text-2xl font-bold text-slate-900 dark:text-white">
+              <p className="text-2xl font-bold text-slate-900">
                 {filteredReservations.length}
               </p>
             </div>
             <div>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-500">
                 Disetujui
               </p>
               <p className="text-2xl font-bold text-green-600">
@@ -322,7 +324,7 @@ export default function LaporanPage() {
               </p>
             </div>
             <div>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-500">
                 Menunggu
               </p>
               <p className="text-2xl font-bold text-yellow-600">
@@ -333,7 +335,7 @@ export default function LaporanPage() {
               </p>
             </div>
             <div>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-500">
                 Ditolak
               </p>
               <p className="text-2xl font-bold text-red-600">
@@ -346,9 +348,9 @@ export default function LaporanPage() {
           </div>
 
           {/* Table */}
-          <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700">
+          <div className="overflow-x-auto rounded-lg border border-slate-200">
             <table className="w-full text-sm text-left">
-              <thead className="text-xs text-slate-500 dark:text-slate-400 uppercase bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+              <thead className="text-xs text-slate-500 uppercase bg-slate-100 border-b border-slate-200">
                 <tr>
                   <th className="px-6 py-3">No</th>
                   <th className="px-6 py-3">Ruangan</th>
@@ -364,7 +366,7 @@ export default function LaporanPage() {
                   <tr>
                     <td
                       colSpan={7}
-                      className="px-6 py-8 text-center text-slate-500 dark:text-slate-400"
+                      className="px-6 py-8 text-center text-slate-500"
                     >
                       Tidak ada data reservasi
                     </td>
@@ -373,22 +375,22 @@ export default function LaporanPage() {
                   currentData.map((res, index) => (
                     <tr
                       key={res.id}
-                      className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800"
+                      className="bg-white border-b border-slate-100 hover:bg-slate-50"
                     >
                       <td className="px-6 py-4">{startIndex + index + 1}</td>
-                      <td className="px-6 py-4 font-medium text-slate-900 dark:text-white">
+                      <td className="px-6 py-4 font-medium text-slate-900">
                         {res.room.nama}
                       </td>
-                      <td className="px-6 py-4 text-slate-700 dark:text-slate-300">
+                      <td className="px-6 py-4 text-slate-700">
                         {res.user.nama}
                       </td>
-                      <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
+                      <td className="px-6 py-4 text-slate-600">
                         {res.keperluan}
                       </td>
-                      <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
+                      <td className="px-6 py-4 text-slate-600">
                         {formatDate(res.waktuMulai)}, {formatTime(res.waktuMulai)}
                       </td>
-                      <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
+                      <td className="px-6 py-4 text-slate-600">
                         {res.jumlahPeserta}
                       </td>
                       <td className="px-6 py-4">{getStatusBadge(res.status)}</td>
@@ -401,7 +403,7 @@ export default function LaporanPage() {
 
           {/* Pagination */}
           {filteredReservations.length > 0 && (
-            <div className="flex justify-between items-center pt-4 text-sm text-slate-500 dark:text-slate-400">
+            <div className="flex justify-between items-center pt-4 text-sm text-slate-500">
               <span>
                 Menampilkan {startIndex + 1}-
                 {Math.min(endIndex, filteredReservations.length)} dari{" "}
@@ -435,3 +437,5 @@ export default function LaporanPage() {
     </div>
   );
 }
+
+

@@ -12,6 +12,7 @@ import { FiAlertTriangle } from "react-icons/fi";
 
 interface Reservation {
   id: string;
+  userId: string;
   roomId: string;
   waktuMulai: string;
   waktuSelesai: string;
@@ -108,10 +109,10 @@ export default function PembatalanPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900">
           Pembatalan Reservasi
         </h1>
-        <p className="text-slate-500 dark:text-slate-400">
+        <p className="text-slate-500">
           Batalkan reservasi yang masih berstatus Pending atau Disetujui.
         </p>
       </div>
@@ -120,7 +121,7 @@ export default function PembatalanPage() {
         {reservations.length === 0 ? (
           <Card>
             <CardContent className="p-8 text-center">
-              <p className="text-slate-500 dark:text-slate-400">
+              <p className="text-slate-500">
                 Tidak ada reservasi yang dapat dibatalkan
               </p>
             </CardContent>
@@ -131,7 +132,7 @@ export default function PembatalanPage() {
               <CardContent className="p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+                    <h3 className="text-lg font-semibold text-slate-900">
                       {reservation.room.nama}
                     </h3>
                     <Badge
@@ -144,18 +145,18 @@ export default function PembatalanPage() {
                         : "Disetujui"}
                     </Badge>
                   </div>
-                  <p className="text-slate-600 dark:text-slate-300 text-sm mb-1">
+                  <p className="text-slate-600 text-sm mb-1">
                     📅 {formatDate(reservation.waktuMulai)} • ⏰{" "}
                     {formatTime(reservation.waktuMulai)} -{" "}
                     {formatTime(reservation.waktuSelesai)}
                   </p>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm">
+                  <p className="text-slate-500 text-sm">
                     Keperluan: {reservation.keperluan}
                   </p>
                 </div>
                 <div className="flex flex-col md:items-end gap-2 w-full md:w-auto">
                   <Button
-                    variant="danger"
+                    variant="destructive"
                     size="sm"
                     className="w-full md:w-auto"
                     onClick={() => handleCancelClick(reservation)}
@@ -171,7 +172,7 @@ export default function PembatalanPage() {
           ))
         )}
 
-        <div className="flex items-center gap-2 p-4 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg border border-blue-100 dark:border-blue-800">
+        <div className="flex items-center gap-2 p-4 bg-blue-50 text-blue-700 rounded-lg border border-blue-100">
           <FiAlertTriangle />
           <span className="text-sm">
             Hanya reservasi yang belum berlangsung yang dapat dibatalkan.
@@ -188,7 +189,7 @@ export default function PembatalanPage() {
           reservationToCancel ? (
             <div className="space-y-2">
               <p>Apakah Anda yakin ingin membatalkan reservasi ini?</p>
-              <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-md text-sm">
+              <div className="bg-slate-100 p-3 rounded-md text-sm">
                 <p><strong>Ruangan:</strong> {reservationToCancel.room.nama}</p>
                 <p><strong>Tanggal:</strong> {formatDate(reservationToCancel.waktuMulai)}</p>
                 <p><strong>Waktu:</strong> {formatTime(reservationToCancel.waktuMulai)} - {formatTime(reservationToCancel.waktuSelesai)}</p>
@@ -200,8 +201,10 @@ export default function PembatalanPage() {
         onConfirm={handleCancelConfirm}
         confirmText="Ya, Batalkan"
         cancelText="Tidak"
-        variant="danger"
+        variant="destructive"
       />
     </div>
   );
 }
+
+

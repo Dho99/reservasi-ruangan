@@ -64,54 +64,28 @@ export default function UserLoginPage() {
       welcomeDescription="Akses layanan reservasi ruangan kampus dengan mudah dan cepat. Masuk untuk melanjutkan."
       sideImageBg="bg-gradient-to-br from-slate-800 to-black"
     >
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div className="relative">
-                    <FiMail className="absolute left-3 top-3 text-slate-400" />
-                    <Input
-                      {...field}
-                      placeholder="NIM / Email Kampus"
-                      type="email"
-                      autoCapitalize="none"
-                      autoComplete="email"
-                      autoCorrect="off"
-                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage className="text-xs pl-3" />
-              </FormItem>
-            )}
-          />
+      <form onSubmit={handleSubmit} className="w-full space-y-4">
+        {/* Email Input */}
+        <div className="space-y-2">
+          <div className="relative">
+            <FiMail className="absolute left-3 top-3 text-slate-400" />
+            <Input
+              id="email"
+              placeholder="NIM / Email Kampus"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoCapitalize="none"
+              autoComplete="email"
+              autoCorrect="off"
+              disabled={isLoading}
+              className="pl-10 bg-slate-50 border-slate-200 focus:bg-white transition-all rounded-full"
+            />
+          </div>
+        </div>
 
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div className="relative">
-                    <FiLock className="absolute left-3 top-3 text-slate-400" />
-                    <Input
-                      {...field}
-                      placeholder="Password"
-                      type="password"
-                      autoComplete="current-password"
-                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage className="text-xs pl-3" />
-              </FormItem>
-            )}
-          />
-
+        {/* Password Input */}
         <div className="space-y-2">
           <div className="relative">
             <FiLock className="absolute left-3 top-3 text-slate-400" />
@@ -124,11 +98,12 @@ export default function UserLoginPage() {
               required
               autoComplete="current-password"
               disabled={isLoading}
-              className="pl-10 bg-slate-50 border-slate-200 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
+              className="pl-10 bg-slate-50 border-slate-200 focus:bg-white transition-all rounded-full"
             />
           </div>
         </div>
 
+        {/* Remember Me & Forgot Password */}
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center space-x-2">
             <input
@@ -138,42 +113,54 @@ export default function UserLoginPage() {
             />
             <label
               htmlFor="remember"
-              className="text-slate-500 cursor-pointer select-none dark:text-slate-400"
+              className="text-slate-500 cursor-pointer select-none"
             >
               Remember me
             </label>
           </div>
           <Link
             href="#"
-            className="font-medium text-slate-600 hover:underline dark:text-slate-400"
+            className="font-medium text-slate-600 hover:underline"
           >
             Forgot password?
           </Link>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="p-3 text-sm text-red-600 bg-red-50 rounded-lg border border-red-200">
+            {error}
+          </div>
+        )}
+
+        {/* Sign In Button */}
         <Button
           type="submit"
           disabled={isLoading}
-          className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200 shadow-lg shadow-slate-500/30 border-0 h-11"
+          className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white shadow-lg shadow-slate-500/30 border-0 h-11"
           size="lg"
         >
           {isLoading ? "Signing in..." : "SIGN IN"}
         </Button>
 
-          <Button
-            className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-300 shadow-lg shadow-slate-500/30 border-0 h-11"
-            size="lg"
-            type="submit"
-            disabled={isLoading}
-          >
-            {isLoading ? "Loading..." : "SIGN IN"}
-          </Button>
+        {/* Google Sign In Button */}
+        <Button
+          type="button"
+          onClick={handleGoogleSignIn}
+          disabled={isLoading}
+          className="w-full rounded-full bg-white hover:bg-slate-50 text-slate-900 shadow-lg border border-slate-200 h-11"
+          size="lg"
+        >
+          <FcGoogle className="mr-2 h-5 w-5" />
+          SIGN IN WITH GOOGLE
+        </Button>
 
-          <Button
-            className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-300 shadow-lg shadow-slate-500/30 border-0 h-11"
-            size="lg"
-            type="button"
-            onClick={() => signIn("google", { callbackUrl: "/user/dashboard" })}
+        {/* Register Link */}
+        <div className="text-center text-sm text-slate-500">
+          Belum punya akun?{" "}
+          <Link
+            href="/user/register"
+            className="font-medium text-slate-900 hover:underline"
           >
             Daftar
           </Link>
@@ -182,3 +169,5 @@ export default function UserLoginPage() {
     </ModernLoginLayout>
   );
 }
+
+

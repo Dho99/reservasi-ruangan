@@ -103,7 +103,7 @@ export default function UserRegisterPage() {
                       autoCapitalize="none"
                       autoComplete=""
                       autoCorrect="off"
-                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
+                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-white transition-all rounded-full"
                     />
                   </div>
                 </FormControl>
@@ -126,7 +126,7 @@ export default function UserRegisterPage() {
                       autoCapitalize="none"
                       autoComplete=""
                       autoCorrect="off"
-                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
+                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-white transition-all rounded-full"
                     />
                   </div>
                 </FormControl>
@@ -148,7 +148,7 @@ export default function UserRegisterPage() {
                       placeholder="Password"
                       type="password"
                       autoComplete="current-password"
-                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
+                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-white transition-all rounded-full"
                     />
                   </div>
                 </FormControl>
@@ -170,7 +170,7 @@ export default function UserRegisterPage() {
                       placeholder="Konfirmasi Password"
                       type="password"
                       autoComplete="new-password"
-                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all rounded-full"
+                      className="pl-10 bg-slate-50 border-slate-200 focus:bg-white transition-all rounded-full"
                     />
                   </div>
                 </FormControl>
@@ -179,24 +179,24 @@ export default function UserRegisterPage() {
             )}
           />
 
-          <div className="flex items-center justify-between text-sm">
-         
+          <div className="text-center text-sm text-slate-500">
+            Sudah punya akun?{" "}
             <Link
-              href="#"
-              className="font-medium text-slate-600 hover:underline dark:text-slate-400"
+              href="/user/login"
+              className="font-medium text-slate-900 hover:underline"
             >
-              Forgot password?
+              Masuk
             </Link>
           </div>
 
           {form.formState.errors.root && (
-            <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-400 rounded-lg border border-red-200 dark:border-red-800">
+            <div className="p-3 text-sm text-red-600 bg-red-50 rounded-lg border border-red-200">
               {form.formState.errors.root.message}
             </div>
           )}
 
           <Button
-            className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-300 shadow-lg shadow-slate-500/30 border-0 h-11"
+            className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white shadow-lg shadow-slate-500/30 border-0 h-11"
             size="lg"
             type="submit"
             disabled={isLoading}
@@ -204,16 +204,10 @@ export default function UserRegisterPage() {
             {isLoading ? "Loading..." : "REGISTER"}
           </Button>
 
-          <Button
-            className="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-300 shadow-lg shadow-slate-500/30 border-0 h-11"
-            size="lg"
-            type="button"
-            onClick={() => signIn("google")}
-          >
-            SIGN IN WITH GOOGLE
-          </Button>
         </form>
       </Form>
     </ModernLoginLayout>
   );
 }
+
+

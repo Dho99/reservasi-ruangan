@@ -121,10 +121,10 @@ export default function StatusPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900">
           Status Pengajuan
         </h1>
-        <p className="text-slate-500 dark:text-slate-400">
+        <p className="text-slate-500">
           Pantau status persetujuan reservasi Anda.
         </p>
       </div>
@@ -134,7 +134,7 @@ export default function StatusPage() {
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-              <thead className="text-xs text-slate-500 uppercase bg-slate-50 dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700">
+              <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
                 <tr>
                   <th className="px-6 py-3">Ruangan</th>
                   <th className="px-6 py-3">Tanggal & Waktu</th>
@@ -154,9 +154,9 @@ export default function StatusPage() {
                   reservations.map((reservation) => (
                     <tr
                       key={reservation.id}
-                      className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800"
+                      className="bg-white border-b border-slate-100 hover:bg-slate-50"
                     >
-                      <td className="px-6 py-4 font-medium text-slate-900 dark:text-white">
+                      <td className="px-6 py-4 font-medium text-slate-900">
                         {reservation.room.nama}
                       </td>
                       <td className="px-6 py-4">
@@ -186,7 +186,7 @@ export default function StatusPage() {
                           size="sm" 
                           variant="outline"
                           onClick={() => handleViewDetail(reservation)}
-                          className="border-blue-500 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950"
+                          className="border-blue-500 text-blue-500 hover:bg-blue-50"
                         >
                           <FiEye className="mr-2" /> Detail
                         </Button>
@@ -215,10 +215,10 @@ export default function StatusPage() {
                 {/* Header */}
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <h3 className="font-semibold text-slate-900 dark:text-white">
+                    <h3 className="font-semibold text-slate-900">
                       {reservation.room.nama}
                     </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-xs text-slate-500 mt-1">
                       {formatDate(reservation.waktuMulai)}
                     </p>
                   </div>
@@ -226,24 +226,24 @@ export default function StatusPage() {
                 </div>
 
                 {/* Time */}
-                <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-                  <span className="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
+                <div className="flex items-center gap-2 text-sm text-slate-600">
+                  <span className="text-xs bg-slate-100 px-2 py-1 rounded">
                     {formatTime(reservation.waktuMulai)} - {formatTime(reservation.waktuSelesai)}
                   </span>
                 </div>
 
                 {/* Keperluan */}
                 <div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Keperluan:</p>
-                  <p className="text-sm text-slate-700 dark:text-slate-300 line-clamp-2">
+                  <p className="text-xs text-slate-500 mb-1">Keperluan:</p>
+                  <p className="text-sm text-slate-700 line-clamp-2">
                     {reservation.keperluan}
                   </p>
                 </div>
 
                 {/* Alasan Penolakan */}
                 {reservation.status === "DITOLAK" && reservation.alasanPenolakan && (
-                  <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded p-2">
-                    <p className="text-xs text-red-700 dark:text-red-400">
+                  <div className="bg-red-50 border border-red-200 rounded p-2">
+                    <p className="text-xs text-red-700">
                       {reservation.alasanPenolakan}
                     </p>
                   </div>
@@ -254,7 +254,7 @@ export default function StatusPage() {
                   size="sm" 
                   variant="outline"
                   onClick={() => handleViewDetail(reservation)}
-                  className="w-full border-blue-500 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950"
+                  className="w-full border-blue-500 text-blue-500 hover:bg-blue-50"
                 >
                   <FiEye className="mr-2" /> Lihat Detail
                 </Button>
@@ -267,15 +267,15 @@ export default function StatusPage() {
       {/* Modal Detail */}
       {showModal && selectedReservation && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4 print:bg-white">
-          <div className="bg-white dark:bg-slate-900 rounded-lg max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto print:max-w-full print:shadow-none">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto print:max-w-full print:shadow-none">
             {/* Modal Header - Hidden saat print */}
-            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-200 dark:border-slate-700 print:hidden">
-              <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-200 print:hidden">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900">
                 Detail Pengajuan Reservasi
               </h2>
               <button
                 onClick={() => setShowModal(false)}
-                className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                className="text-slate-500 hover:text-slate-700"
               >
                 <FiX size={24} />
               </button>
@@ -292,12 +292,12 @@ export default function StatusPage() {
               {/* Status Badge */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Status Pengajuan</p>
+                  <p className="text-sm text-slate-500">Status Pengajuan</p>
                   <div className="mt-1">{getStatusBadge(selectedReservation.status)}</div>
                 </div>
                 <div className="sm:text-right">
-                  <p className="text-sm text-slate-500 dark:text-slate-400">ID Reservasi</p>
-                  <p className="text-sm font-mono text-slate-900 dark:text-white mt-1">
+                  <p className="text-sm text-slate-500">ID Reservasi</p>
+                  <p className="text-sm font-mono text-slate-900 mt-1">
                     {selectedReservation.id.slice(0, 8).toUpperCase()}
                   </p>
                 </div>
@@ -305,11 +305,11 @@ export default function StatusPage() {
 
               {/* Alasan Penolakan */}
               {selectedReservation.status === "DITOLAK" && selectedReservation.alasanPenolakan && (
-                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-                  <p className="text-sm font-medium text-red-900 dark:text-red-300 mb-1">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <p className="text-sm font-medium text-red-900 mb-1">
                     Alasan Penolakan:
                   </p>
-                  <p className="text-sm text-red-700 dark:text-red-400">
+                  <p className="text-sm text-red-700">
                     {selectedReservation.alasanPenolakan}
                   </p>
                 </div>
@@ -317,19 +317,19 @@ export default function StatusPage() {
 
               {/* Detail Pemohon */}
               <div>
-                <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3 uppercase">
+                <h3 className="text-sm font-semibold text-slate-900 mb-3 uppercase">
                   Detail Pemohon
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">Nama</p>
-                    <p className="text-sm font-medium text-slate-900 dark:text-white mt-1">
+                    <p className="text-sm text-slate-500">Nama</p>
+                    <p className="text-sm font-medium text-slate-900 mt-1">
                       {selectedReservation.user.nama}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">Email</p>
-                    <p className="text-sm font-medium text-slate-900 dark:text-white mt-1 break-all">
+                    <p className="text-sm text-slate-500">Email</p>
+                    <p className="text-sm font-medium text-slate-900 mt-1 break-all">
                       {selectedReservation.user.email}
                     </p>
                   </div>
@@ -338,31 +338,31 @@ export default function StatusPage() {
 
               {/* Detail Ruangan */}
               <div>
-                <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3 uppercase">
+                <h3 className="text-sm font-semibold text-slate-900 mb-3 uppercase">
                   Detail Ruangan
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">Nama Ruangan</p>
-                    <p className="text-sm font-medium text-slate-900 dark:text-white mt-1">
+                    <p className="text-sm text-slate-500">Nama Ruangan</p>
+                    <p className="text-sm font-medium text-slate-900 mt-1">
                       {selectedReservation.room.nama}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">Lokasi</p>
-                    <p className="text-sm font-medium text-slate-900 dark:text-white mt-1">
+                    <p className="text-sm text-slate-500">Lokasi</p>
+                    <p className="text-sm font-medium text-slate-900 mt-1">
                       {selectedReservation.room.lokasi}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">Kapasitas Ruangan</p>
-                    <p className="text-sm font-medium text-slate-900 dark:text-white mt-1">
+                    <p className="text-sm text-slate-500">Kapasitas Ruangan</p>
+                    <p className="text-sm font-medium text-slate-900 mt-1">
                       {selectedReservation.room.kapasitas} orang
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">Jumlah Peserta</p>
-                    <p className="text-sm font-medium text-slate-900 dark:text-white mt-1">
+                    <p className="text-sm text-slate-500">Jumlah Peserta</p>
+                    <p className="text-sm font-medium text-slate-900 mt-1">
                       {selectedReservation.jumlahPeserta} orang
                     </p>
                   </div>
@@ -371,19 +371,19 @@ export default function StatusPage() {
 
               {/* Detail Waktu */}
               <div>
-                <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3 uppercase">
+                <h3 className="text-sm font-semibold text-slate-900 mb-3 uppercase">
                   Jadwal Penggunaan
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">Waktu Mulai</p>
-                    <p className="text-sm font-medium text-slate-900 dark:text-white mt-1">
+                    <p className="text-sm text-slate-500">Waktu Mulai</p>
+                    <p className="text-sm font-medium text-slate-900 mt-1">
                       {formatDateTime(selectedReservation.waktuMulai)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">Waktu Selesai</p>
-                    <p className="text-sm font-medium text-slate-900 dark:text-white mt-1">
+                    <p className="text-sm text-slate-500">Waktu Selesai</p>
+                    <p className="text-sm font-medium text-slate-900 mt-1">
                       {formatDateTime(selectedReservation.waktuSelesai)}
                     </p>
                   </div>
@@ -392,18 +392,18 @@ export default function StatusPage() {
 
               {/* Keperluan */}
               <div>
-                <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3 uppercase">
+                <h3 className="text-sm font-semibold text-slate-900 mb-3 uppercase">
                   Keperluan Penggunaan
                 </h3>
-                <p className="text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 p-4 rounded-lg">
+                <p className="text-sm text-slate-700 bg-slate-50 p-4 rounded-lg">
                   {selectedReservation.keperluan}
                 </p>
               </div>
 
               {/* Tanggal Pengajuan */}
               <div>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Tanggal Pengajuan</p>
-                <p className="text-sm font-medium text-slate-900 dark:text-white mt-1">
+                <p className="text-sm text-slate-500">Tanggal Pengajuan</p>
+                <p className="text-sm font-medium text-slate-900 mt-1">
                   {formatDateTime(selectedReservation.createdAt)}
                 </p>
               </div>
@@ -428,7 +428,7 @@ export default function StatusPage() {
             </div>
 
             {/* Modal Footer - Hidden saat print */}
-            <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 p-4 sm:p-6 border-t border-slate-200 dark:border-slate-700 print:hidden">
+            <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 p-4 sm:p-6 border-t border-slate-200 print:hidden">
               <Button
                 variant="outline"
                 onClick={() => setShowModal(false)}
@@ -470,3 +470,5 @@ export default function StatusPage() {
     </div>
   );
 }
+
+
