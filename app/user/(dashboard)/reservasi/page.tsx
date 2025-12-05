@@ -119,13 +119,13 @@ export default function ReservasiPage() {
       const blockedResponse = await api.get("/api/blocked-slots");
       const allBlocked = blockedResponse.data.data || [];
 
-      // Filter by selected room and date
+      // Filter by selected room and date - HANYA tampilkan yang DISETUJUI
       const roomReservations = allReservations.filter((res: Reservation) => {
         const resDate = new Date(res.waktuMulai).toISOString().split("T")[0];
         return (
           res.roomId === formData.roomId &&
           resDate === selectedDate &&
-          res.status === "DISETUJUI"
+          res.status === "DISETUJUI" // Hanya yang disetujui yang menghalangi
         );
       });
 
