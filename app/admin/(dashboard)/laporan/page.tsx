@@ -216,6 +216,9 @@ export default function LaporanPage() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentData = filteredReservations.slice(startIndex, endIndex);
+  
+  // For print: use all data
+  const printData = filteredReservations;
 
   if (loading) {
     return (
@@ -227,7 +230,8 @@ export default function LaporanPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      {/* Header - Hidden saat print */}
+      <div className="flex items-center justify-between print:hidden">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-slate-900">
             Laporan Penggunaan
@@ -246,10 +250,37 @@ export default function LaporanPage() {
         </div>
       </div>
 
-      <Card>
+      {/* Print Header - Only visible saat print */}
+      <div className="hidden print:block text-center mb-8">
+        <h1 className="text-2xl font-bold mb-2">LAPORAN PENGGUNAAN RUANGAN</h1>
+        <p className="text-sm text-slate-600">Universitas Siliwangi</p>
+        <p className="text-xs text-slate-500 mt-2">
+          Dicetak pada: {new Date().toLocaleString("id-ID", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+          })}
+        </p>
+        {(filters.startDate || filters.endDate || filters.roomId !== "all") && (
+          <div className="text-xs text-slate-600 mt-2">
+            <p>
+              {filters.startDate && `Dari: ${formatDate(filters.startDate + "T00:00:00")}`}
+              {filters.startDate && filters.endDate && " | "}
+              {filters.endDate && `Sampai: ${formatDate(filters.endDate + "T23:59:59")}`}
+            </p>
+            {filters.roomId !== "all" && (
+              <p>Ruangan: {rooms.find(r => r.id === filters.roomId)?.nama || "Semua"}</p>
+            )}
+          </div>
+        )}
+      </div>
+
+      <Card className="print:shadow-none print:border-0">
         <CardContent className="p-4 space-y-4">
-          {/* Filter Bar */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-slate-50 rounded-lg">
+          {/* Filter Bar - Hidden saat print */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-slate-50 rounded-lg print:hidden">
             <div className="space-y-1">
               <label className="text-xs font-medium text-slate-500">
                 Dari Tanggal
@@ -302,8 +333,8 @@ export default function LaporanPage() {
             </div>
           </div>
 
-          {/* Summary Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-blue-50 rounded-lg">
+          {/* Summary Stats - Visible di print */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-blue-50 rounded-lg print:bg-slate-100 print:border print:border-slate-300">
             <div>
               <p className="text-xs text-slate-500">
                 Total Reservasi
@@ -347,8 +378,8 @@ export default function LaporanPage() {
             </div>
           </div>
 
-          {/* Table */}
-          <div className="overflow-x-auto rounded-lg border border-slate-200">
+          {/* Table - Screen View (Paginated) */}
+          <div className="overflow-x-auto rounded-lg border border-slate-200 print:hidden">
             <table className="w-full text-sm text-left">
               <thead className="text-xs text-slate-500 uppercase bg-slate-100 border-b border-slate-200">
                 <tr>
@@ -401,9 +432,69 @@ export default function LaporanPage() {
             </table>
           </div>
 
-          {/* Pagination */}
+          {/* Table - Print View (All Data) */}
+          <div className="hidden print:block overflow-x-auto rounded-lg border border-slate-200">
+            <table className="w-full text-sm text-left">
+              <thead className="text-xs text-slate-700 uppercase bg-slate-100 border-b border-slate-200">
+                <tr>
+                  <th className="px-4 py-2 border border-slate-300">No</th>
+                  <th className="px-4 py-2 border border-slate-300">Ruangan</th>
+                  <th className="px-4 py-2 border border-slate-300">Pemohon</th>
+                  <th className="px-4 py-2 border border-slate-300">Keperluan</th>
+                  <th className="px-4 py-2 border border-slate-300">Tanggal & Jam</th>
+                  <th className="px-4 py-2 border border-slate-300">Peserta</th>
+                  <th className="px-4 py-2 border border-slate-300">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {printData.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={7}
+                      className="px-4 py-6 text-center text-slate-500 border border-slate-300"
+                    >
+                      Tidak ada data reservasi
+                    </td>
+                  </tr>
+                ) : (
+                  printData.map((res, index) => (
+                    <tr key={res.id} className="border-b border-slate-200">
+                      <td className="px-4 py-2 border border-slate-300">{index + 1}</td>
+                      <td className="px-4 py-2 font-medium text-slate-900 border border-slate-300">
+                        {res.room.nama}
+                      </td>
+                      <td className="px-4 py-2 text-slate-700 border border-slate-300">
+                        {res.user.nama}
+                      </td>
+                      <td className="px-4 py-2 text-slate-600 border border-slate-300">
+                        {res.keperluan}
+                      </td>
+                      <td className="px-4 py-2 text-slate-600 border border-slate-300">
+                        {formatDate(res.waktuMulai)}, {formatTime(res.waktuMulai)}
+                      </td>
+                      <td className="px-4 py-2 text-slate-600 border border-slate-300">
+                        {res.jumlahPeserta}
+                      </td>
+                      <td className="px-4 py-2 border border-slate-300">
+                        <span className={`px-2 py-1 text-xs rounded ${
+                          res.status === "DISETUJUI" ? "bg-green-100 text-green-800" :
+                          res.status === "MENUNGGU" ? "bg-yellow-100 text-yellow-800" :
+                          res.status === "DITOLAK" ? "bg-red-100 text-red-800" :
+                          "bg-slate-100 text-slate-800"
+                        }`}>
+                          {getStatusText(res.status)}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination - Hidden saat print */}
           {filteredReservations.length > 0 && (
-            <div className="flex justify-between items-center pt-4 text-sm text-slate-500">
+            <div className="flex justify-between items-center pt-4 text-sm text-slate-500 print:hidden">
               <span>
                 Menampilkan {startIndex + 1}-
                 {Math.min(endIndex, filteredReservations.length)} dari{" "}
@@ -434,6 +525,47 @@ export default function LaporanPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Print Styles */}
+      <style jsx global>{`
+        @media print {
+          /* Hide everything except the main content */
+          body * {
+            visibility: hidden;
+          }
+          
+          /* Show only print content */
+          .space-y-6,
+          .space-y-6 * {
+            visibility: visible;
+          }
+          
+          /* Remove margins and padding for print */
+          body {
+            margin: 0;
+            padding: 20px;
+          }
+          
+          /* Ensure table fits on page */
+          table {
+            page-break-inside: auto;
+          }
+          
+          tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+          }
+          
+          thead {
+            display: table-header-group;
+          }
+          
+          /* Print all data, not just current page */
+          .overflow-x-auto {
+            overflow: visible !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
