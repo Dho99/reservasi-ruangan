@@ -282,22 +282,37 @@ export default function StatusPage() {
             </div>
 
             {/* Modal Content */}
-            <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+            <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 print:p-8">
               {/* Header untuk Print */}
-              <div className="hidden print:block text-center mb-8">
-                <h1 className="text-2xl font-bold mb-2">DETAIL PENGAJUAN RESERVASI RUANGAN</h1>
-                <p className="text-sm text-slate-600">Universitas Siliwangi</p>
+              <div className="hidden print:block text-center mb-8 pb-4 border-b-2 border-slate-900">
+                <h1 className="text-2xl font-bold mb-3 text-slate-900">
+                  DETAIL PENGAJUAN RESERVASI RUANGAN
+                </h1>
+                <p className="text-base font-medium text-slate-700">Universitas Siliwangi</p>
+                <p className="text-xs text-slate-600 mt-2">
+                  Sistem Informasi Reservasi Ruangan
+                </p>
               </div>
 
               {/* Status Badge */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 print:border print:border-slate-300 print:p-4 print:rounded-lg print:bg-slate-50">
                 <div>
-                  <p className="text-sm text-slate-500">Status Pengajuan</p>
-                  <div className="mt-1">{getStatusBadge(selectedReservation.status)}</div>
+                  <p className="text-sm text-slate-500 print:text-slate-700 print:font-medium">Status Pengajuan</p>
+                  <div className="mt-1 print:mt-2">
+                    {/* Badge untuk screen */}
+                    <span className="print:hidden">{getStatusBadge(selectedReservation.status)}</span>
+                    {/* Text untuk print */}
+                    <span className="hidden print:inline-block px-3 py-1 text-sm font-semibold rounded print:text-slate-900">
+                      {selectedReservation.status === "MENUNGGU" && "⏳ MENUNGGU"}
+                      {selectedReservation.status === "DISETUJUI" && "✅ DISETUJUI"}
+                      {selectedReservation.status === "DITOLAK" && "❌ DITOLAK"}
+                      {selectedReservation.status === "DIBATALKAN" && "🚫 DIBATALKAN"}
+                    </span>
+                  </div>
                 </div>
                 <div className="sm:text-right">
-                  <p className="text-sm text-slate-500">ID Reservasi</p>
-                  <p className="text-sm font-mono text-slate-900 mt-1">
+                  <p className="text-sm text-slate-500 print:text-slate-700 print:font-medium">ID Reservasi</p>
+                  <p className="text-sm font-mono text-slate-900 mt-1 print:text-base print:font-bold">
                     {selectedReservation.id.slice(0, 8).toUpperCase()}
                   </p>
                 </div>
@@ -316,20 +331,20 @@ export default function StatusPage() {
               )}
 
               {/* Detail Pemohon */}
-              <div>
-                <h3 className="text-sm font-semibold text-slate-900 mb-3 uppercase">
+              <div className="print:border print:border-slate-300 print:p-4 print:rounded-lg">
+                <h3 className="text-sm font-semibold text-slate-900 mb-3 uppercase print:text-base print:mb-4 print:pb-2 print:border-b print:border-slate-300">
                   Detail Pemohon
                 </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 print:gap-6">
                   <div>
-                    <p className="text-sm text-slate-500">Nama</p>
-                    <p className="text-sm font-medium text-slate-900 mt-1">
+                    <p className="text-sm text-slate-500 print:text-slate-700 print:font-medium">Nama</p>
+                    <p className="text-sm font-medium text-slate-900 mt-1 print:text-base print:mt-2">
                       {selectedReservation.user.nama}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-slate-500">Email</p>
-                    <p className="text-sm font-medium text-slate-900 mt-1 break-all">
+                    <p className="text-sm text-slate-500 print:text-slate-700 print:font-medium">Email</p>
+                    <p className="text-sm font-medium text-slate-900 mt-1 break-all print:text-base print:mt-2">
                       {selectedReservation.user.email}
                     </p>
                   </div>
@@ -337,32 +352,32 @@ export default function StatusPage() {
               </div>
 
               {/* Detail Ruangan */}
-              <div>
-                <h3 className="text-sm font-semibold text-slate-900 mb-3 uppercase">
+              <div className="print:border print:border-slate-300 print:p-4 print:rounded-lg">
+                <h3 className="text-sm font-semibold text-slate-900 mb-3 uppercase print:text-base print:mb-4 print:pb-2 print:border-b print:border-slate-300">
                   Detail Ruangan
                 </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 print:gap-6">
                   <div>
-                    <p className="text-sm text-slate-500">Nama Ruangan</p>
-                    <p className="text-sm font-medium text-slate-900 mt-1">
+                    <p className="text-sm text-slate-500 print:text-slate-700 print:font-medium">Nama Ruangan</p>
+                    <p className="text-sm font-medium text-slate-900 mt-1 print:text-base print:mt-2">
                       {selectedReservation.room.nama}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-slate-500">Lokasi</p>
-                    <p className="text-sm font-medium text-slate-900 mt-1">
+                    <p className="text-sm text-slate-500 print:text-slate-700 print:font-medium">Lokasi</p>
+                    <p className="text-sm font-medium text-slate-900 mt-1 print:text-base print:mt-2">
                       {selectedReservation.room.lokasi}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-slate-500">Kapasitas Ruangan</p>
-                    <p className="text-sm font-medium text-slate-900 mt-1">
+                    <p className="text-sm text-slate-500 print:text-slate-700 print:font-medium">Kapasitas Ruangan</p>
+                    <p className="text-sm font-medium text-slate-900 mt-1 print:text-base print:mt-2">
                       {selectedReservation.room.kapasitas} orang
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-slate-500">Jumlah Peserta</p>
-                    <p className="text-sm font-medium text-slate-900 mt-1">
+                    <p className="text-sm text-slate-500 print:text-slate-700 print:font-medium">Jumlah Peserta</p>
+                    <p className="text-sm font-medium text-slate-900 mt-1 print:text-base print:mt-2">
                       {selectedReservation.jumlahPeserta} orang
                     </p>
                   </div>
@@ -370,20 +385,20 @@ export default function StatusPage() {
               </div>
 
               {/* Detail Waktu */}
-              <div>
-                <h3 className="text-sm font-semibold text-slate-900 mb-3 uppercase">
+              <div className="print:border print:border-slate-300 print:p-4 print:rounded-lg">
+                <h3 className="text-sm font-semibold text-slate-900 mb-3 uppercase print:text-base print:mb-4 print:pb-2 print:border-b print:border-slate-300">
                   Jadwal Penggunaan
                 </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 print:gap-6">
                   <div>
-                    <p className="text-sm text-slate-500">Waktu Mulai</p>
-                    <p className="text-sm font-medium text-slate-900 mt-1">
+                    <p className="text-sm text-slate-500 print:text-slate-700 print:font-medium">Waktu Mulai</p>
+                    <p className="text-sm font-medium text-slate-900 mt-1 print:text-base print:mt-2">
                       {formatDateTime(selectedReservation.waktuMulai)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-slate-500">Waktu Selesai</p>
-                    <p className="text-sm font-medium text-slate-900 mt-1">
+                    <p className="text-sm text-slate-500 print:text-slate-700 print:font-medium">Waktu Selesai</p>
+                    <p className="text-sm font-medium text-slate-900 mt-1 print:text-base print:mt-2">
                       {formatDateTime(selectedReservation.waktuSelesai)}
                     </p>
                   </div>
@@ -391,34 +406,34 @@ export default function StatusPage() {
               </div>
 
               {/* Keperluan */}
-              <div>
-                <h3 className="text-sm font-semibold text-slate-900 mb-3 uppercase">
+              <div className="print:border print:border-slate-300 print:p-4 print:rounded-lg">
+                <h3 className="text-sm font-semibold text-slate-900 mb-3 uppercase print:text-base print:mb-4 print:pb-2 print:border-b print:border-slate-300">
                   Keperluan Penggunaan
                 </h3>
-                <p className="text-sm text-slate-700 bg-slate-50 p-4 rounded-lg">
+                <p className="text-sm text-slate-700 bg-slate-50 p-4 rounded-lg print:text-base print:bg-white print:p-0 print:leading-relaxed">
                   {selectedReservation.keperluan}
                 </p>
               </div>
 
               {/* Tanggal Pengajuan */}
-              <div>
-                <p className="text-sm text-slate-500">Tanggal Pengajuan</p>
-                <p className="text-sm font-medium text-slate-900 mt-1">
+              <div className="print:border print:border-slate-300 print:p-4 print:rounded-lg">
+                <p className="text-sm text-slate-500 print:text-slate-700 print:font-medium print:mb-2">Tanggal Pengajuan</p>
+                <p className="text-sm font-medium text-slate-900 mt-1 print:text-base print:mt-0">
                   {formatDateTime(selectedReservation.createdAt)}
                 </p>
               </div>
 
               {/* Footer untuk Print - 3 Tanda Tangan */}
-              <div className="hidden print:block mt-12 pt-8 border-t border-slate-300">
-                <div className="grid grid-cols-3 gap-8">
+              <div className="hidden print:block mt-12 pt-8 border-t-2 border-slate-900">
+                <div className="grid grid-cols-3 gap-12">
                   {/* Pemohon */}
                   <div className="text-center">
-                    <p className="text-sm mb-16">Pemohon,</p>
+                    <p className="text-sm font-medium mb-20 text-slate-900">Pemohon,</p>
                     <div>
-                      <p className="text-sm font-semibold border-t border-slate-900 pt-1 inline-block px-4">
+                      <p className="text-sm font-bold border-t-2 border-slate-900 pt-2 inline-block px-6 text-slate-900">
                         {selectedReservation.user.nama}
                       </p>
-                      <p className="text-xs text-slate-600 mt-1">
+                      <p className="text-xs text-slate-700 mt-2 font-medium">
                         {selectedReservation.user.email}
                       </p>
                     </div>
@@ -426,24 +441,24 @@ export default function StatusPage() {
 
                   {/* Admin */}
                   <div className="text-center">
-                    <p className="text-sm mb-16">Admin,</p>
-                    <p className="text-sm font-semibold border-t border-slate-900 pt-1 inline-block px-4">
+                    <p className="text-sm font-medium mb-20 text-slate-900">Admin,</p>
+                    <p className="text-sm font-bold border-t-2 border-slate-900 pt-2 inline-block px-6 text-slate-900">
                       (.................................)
                     </p>
                   </div>
 
                   {/* Kepala Lab */}
                   <div className="text-center">
-                    <p className="text-sm mb-16">Kepala Lab,</p>
-                    <p className="text-sm font-semibold border-t border-slate-900 pt-1 inline-block px-4">
+                    <p className="text-sm font-medium mb-20 text-slate-900">Kepala Lab,</p>
+                    <p className="text-sm font-bold border-t-2 border-slate-900 pt-2 inline-block px-6 text-slate-900">
                       (.................................)
                     </p>
                   </div>
                 </div>
 
                 {/* Catatan Footer */}
-                <div className="mt-8 text-center">
-                  <p className="text-xs text-slate-500">
+                <div className="mt-10 text-center border-t border-slate-300 pt-4">
+                  <p className="text-xs text-slate-700 font-medium">
                     Dokumen ini dicetak pada: {new Date().toLocaleString("id-ID", {
                       day: "numeric",
                       month: "long",
@@ -480,19 +495,53 @@ export default function StatusPage() {
       {/* Print Styles */}
       <style jsx global>{`
         @media print {
+          /* Reset all visibility */
           body * {
             visibility: hidden;
           }
+          
+          /* Show modal content */
+          .fixed.inset-0,
           .fixed.inset-0 * {
             visibility: visible;
           }
+          
+          /* Position modal for print */
           .fixed.inset-0 {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: auto;
-            overflow: visible;
+            position: static !important;
+            background: white !important;
+            padding: 0 !important;
+            margin: 0 !important;
+          }
+          
+          /* Remove modal styling for print */
+          .fixed.inset-0 > div {
+            max-width: 100% !important;
+            max-height: none !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            overflow: visible !important;
+          }
+          
+          /* Ensure proper spacing */
+          body {
+            margin: 0;
+            padding: 20px;
+          }
+          
+          /* Page breaks */
+          .grid {
+            page-break-inside: avoid;
+          }
+          
+          /* Ensure text is visible */
+          h1, h2, h3, p, span, div {
+            color: black !important;
+          }
+          
+          /* Hide scrollbar */
+          ::-webkit-scrollbar {
+            display: none;
           }
         }
       `}</style>
