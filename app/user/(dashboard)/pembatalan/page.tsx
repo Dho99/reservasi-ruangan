@@ -47,6 +47,7 @@ export default function PembatalanPage() {
           (res.status === "MENUNGGU" || res.status === "DISETUJUI") &&
           new Date(res.waktuMulai) > new Date()
       );
+      console.log(response)
       setReservations(cancellable);
     } catch (error) {
       console.error("Error fetching reservations:", error);

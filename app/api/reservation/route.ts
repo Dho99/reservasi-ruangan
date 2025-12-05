@@ -11,12 +11,12 @@ export async function GET() {
             id: true,
             nama: true,
             email: true,
-          }
-        }
+          },
+        },
       },
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: "desc",
+      },
     });
 
     return NextResponse.json({ data: reservations }, { status: 200 });
@@ -51,14 +51,15 @@ export async function POST(request: NextRequest) {
         waktuSelesai: {
           gt: waktuMulai,
         },
+        status: "DISETUJUI" ,
       },
     });
 
-    if(checkExistingReservation){
-        return NextResponse.json(
-            { message: "Room is already booked for the selected time slot." },
-            { status: 409 }
-          );
+    if (checkExistingReservation) {
+      return NextResponse.json(
+        { message: "Room is already booked for the selected time slot." },
+        { status: 409 }
+      );
     }
 
     // Check for blocked slots
@@ -74,11 +75,14 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    if(checkBlockedSlot){
-        return NextResponse.json(
-            { message: "Ruangan sedang diblokir untuk waktu tersebut. Silakan pilih waktu lain." },
-            { status: 409 }
-          );
+    if (checkBlockedSlot) {
+      return NextResponse.json(
+        {
+          message:
+            "Ruangan sedang diblokir untuk waktu tersebut. Silakan pilih waktu lain.",
+        },
+        { status: 409 }
+      );
     }
 
     const newReservation = await prisma.reservation.create({
@@ -105,75 +109,76 @@ export async function POST(request: NextRequest) {
   }
 }
 
-
 export async function DELETE(request: NextRequest) {
-    try {
-        const { reservationId } = await request.json();
+  try {
+    const { reservationId } = await request.json();
 
-        const deleteReservation = await prisma.reservation.delete({
-            where: {
-                id: reservationId
-            }
-        });
+    const deleteReservation = await prisma.reservation.delete({
+      where: {
+        id: reservationId,
+      },
+    });
 
-        return NextResponse.json({
-            message: "Reservation Data deleted Successfully",
-            data: deleteReservation
-        }, {status: 200});
-    }catch(err: unknown){
-        return NextResponse.json(
-            {
-                message: err instanceof Error ? err.message : "Internal Server Error",
-            },
-            { status: 500 }
-        );
-    }
+    return NextResponse.json(
+      {
+        message: "Reservation Data deleted Successfully",
+        data: deleteReservation,
+      },
+      { status: 200 }
+    );
+  } catch (err: unknown) {
+    return NextResponse.json(
+      {
+        message: err instanceof Error ? err.message : "Internal Server Error",
+      },
+      { status: 500 }
+    );
+  }
 }
 
+export async function PUT(request: NextRequest) {
+  try {
+    const {
+      userId,
+      reservationId,
+      roomId,
+      waktuMulai,
+      waktuSelesai,
+      keperluan,
+      jumlahPeserta,
+      status,
+      alasanPenolakan,
+    } = await request.json();
 
-export async function PUT(request: NextRequest){
-    try {
-         const {
-            userId,
-            reservationId,
-            roomId,
-            waktuMulai,
-            waktuSelesai,
-            keperluan,
-            jumlahPeserta,
-            status,
-            alasanPenolakan,
-        } = await request.json();
+    const editReservation = await prisma.reservation.update({
+      where: {
+        id: reservationId,
+      },
+      data: {
+        userId,
+        roomId,
+        waktuMulai,
+        waktuSelesai,
+        keperluan,
+        jumlahPeserta,
+        status,
+        alasanPenolakan,
+      },
+    });
 
-        const editReservation = await prisma.reservation.update({
-            where: {
-                id: reservationId,
-            },
-            data: {
-                userId,
-                roomId,
-                waktuMulai,
-                waktuSelesai,
-                keperluan,
-                jumlahPeserta,
-                status,
-                alasanPenolakan
-            }
-        });
-
-        return NextResponse.json({
-            message: "Reservation Data updated Successfully",
-            data: editReservation
-        }, {status: 200});
-
-
-
-    }catch(err: unknown){
-        return NextResponse.json(
-            {
-                message: err instanceof Error ? err.message : "Internal Server Error",
-            },
-            { status: 500 }
-        );
-    }
+    return NextResponse.json(
+      {
+        message: "Reservation Data updated Successfully",
+        data: editReservation,
+      },
+      { status: 200 }
+    );
+  } catch (err: unknown) {
+    return NextResponse.json(
+      {
+        message: err instanceof Error ? err.message : "Internal Server Error",
+      },
+      { status: 500 }
+    );
+  }
 }
