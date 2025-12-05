@@ -408,21 +408,50 @@ export default function StatusPage() {
                 </p>
               </div>
 
-              {/* Footer untuk Print */}
+              {/* Footer untuk Print - 3 Tanda Tangan */}
               <div className="hidden print:block mt-12 pt-8 border-t border-slate-300">
-                <div className="flex justify-between">
+                <div className="grid grid-cols-3 gap-8">
+                  {/* Pemohon */}
                   <div className="text-center">
                     <p className="text-sm mb-16">Pemohon,</p>
-                    <p className="text-sm font-semibold border-t border-slate-900 pt-1 inline-block px-8">
-                      {selectedReservation.user.nama}
-                    </p>
+                    <div>
+                      <p className="text-sm font-semibold border-t border-slate-900 pt-1 inline-block px-4">
+                        {selectedReservation.user.nama}
+                      </p>
+                      <p className="text-xs text-slate-600 mt-1">
+                        {selectedReservation.user.email}
+                      </p>
+                    </div>
                   </div>
+
+                  {/* Admin */}
                   <div className="text-center">
                     <p className="text-sm mb-16">Admin,</p>
-                    <p className="text-sm font-semibold border-t border-slate-900 pt-1 inline-block px-8">
+                    <p className="text-sm font-semibold border-t border-slate-900 pt-1 inline-block px-4">
                       (.................................)
                     </p>
                   </div>
+
+                  {/* Kepala Lab */}
+                  <div className="text-center">
+                    <p className="text-sm mb-16">Kepala Lab,</p>
+                    <p className="text-sm font-semibold border-t border-slate-900 pt-1 inline-block px-4">
+                      (.................................)
+                    </p>
+                  </div>
+                </div>
+
+                {/* Catatan Footer */}
+                <div className="mt-8 text-center">
+                  <p className="text-xs text-slate-500">
+                    Dokumen ini dicetak pada: {new Date().toLocaleString("id-ID", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit"
+                    })}
+                  </p>
                 </div>
               </div>
             </div>
