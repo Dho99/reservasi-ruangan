@@ -17,19 +17,32 @@ export async function GET(){
 
 export async function POST(request: NextRequest) {
     try {
-    const { nama, deskripsi, kapasitas, lokasi, gambar} = await request.json();
-    const newRooom = prisma.room.create({
-        data: {
-            nama,
-            deskripsi,
-            kapasitas,
-            lokasi,
-            gambar
+        const { nama, deskripsi, kapasitas, lokasi, gambar} = await request.json();
+        
+        // Validate required fields
+        if (!nama || !kapasitas || !lokasi) {
+            return NextResponse.json(
+                { message: "Nama, kapasitas, dan lokasi wajib diisi" },
+                { status: 400 }
+            );
         }
-    });
 
-    return NextResponse.json({data: newRooom}, {status: 201});
-    }catch(err: unknown) {
+        const newRoom = await prisma.room.create({
+            data: {
+                nama,
+                deskripsi: deskripsi || null,
+                kapasitas: parseInt(kapasitas),
+                lokasi,
+                gambar: gambar || null
+            }
+        });
+
+        return NextResponse.json({
+            message: "Ruangan berhasil ditambahkan",
+            data: newRoom
+        }, {status: 201});
+    } catch(err: unknown) {
+        console.error("Error creating room:", err);
         return NextResponse.json(
             {
                 message: err instanceof Error ? err.message : "Internal Server Error",
