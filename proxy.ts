@@ -29,27 +29,8 @@ export default auth((req) => {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  const userRole = session.user?.role;
-
-  // Check role-based access
-  if (pathname.startsWith("/admin")) {
-    // Admin routes hanya untuk ADMIN
-    if (userRole !== "ADMIN") {
-      return NextResponse.redirect(new URL("/unauthorized?type=admin", req.url));
-    }
-  }
-
-  if (
-    pathname.startsWith("/user") &&
-    !pathname.startsWith("/user/login") &&
-    !pathname.startsWith("/user/register")
-  ) {
-    // User routes hanya untuk MAHASISWA
-    if (userRole !== "MAHASISWA") {
-      return NextResponse.redirect(new URL("/unauthorized?type=user", req.url));
-    }
-  }
-
+  // Role checking dilakukan di layout, bukan di middleware
+  // Ini menghindari flash/kedip saat reload
   return NextResponse.next();
 });
 

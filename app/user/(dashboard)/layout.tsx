@@ -10,9 +10,19 @@ export default function UserDashboardLayout({
   children: React.ReactNode;
 }) {
 
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
-  if (session?.user?.role !== "MAHASISWA" as string) {
+  // Show loading while checking session
+  if (status === "loading") {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-slate-500">Loading...</div>
+      </div>
+    );
+  }
+
+  // Check role after session is loaded
+  if (session?.user?.role !== "MAHASISWA") {
      return <InvalidRole />;
   }
 
